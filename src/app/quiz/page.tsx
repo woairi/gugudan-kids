@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { lsGet, lsSet } from "@/shared/lib/storage";
 import { isLastResultArray } from "@/shared/lib/validators";
@@ -364,7 +364,7 @@ export default function QuizPage() {
             {mode === "weak" ? "틀린 적이 많은 문제부터 나와요." : "준비되면 시작! (처음엔 천천히 해도 돼)"}
           </div>
           <div className="mt-3 grid grid-cols-5 gap-2">
-            {Array.from({ length: maxRight + 1 }, (_, i) => i).map((dan) => {
+            {Array.from({ length: 10 }, (_, i) => i).map((dan) => {
               const active = selectedDan === dan;
               return (
                 <button
