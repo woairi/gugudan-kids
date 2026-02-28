@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { lsGet, lsSet } from "@/shared/lib/storage";
 import { isLastResultArray } from "@/shared/lib/validators";
@@ -136,6 +136,18 @@ export default function QuizPage() {
   const [isRight, setIsRight] = useState<boolean | null>(null);
 
   const current = questions?.[index] ?? null;
+
+  const inProgress = questions != null;
+
+  useEffect(() => {
+    if (!inProgress) return;
+    const onBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+    window.addEventListener("beforeunload", onBeforeUnload);
+    return () => window.removeEventListener("beforeunload", onBeforeUnload);
+  }, [inProgress]);
   const total = questions?.length ?? 10;
 
   const statusText = useMemo(() => {
@@ -216,9 +228,19 @@ export default function QuizPage() {
   return (
     <main className="min-h-dvh bg-amber-50 text-slate-900">
       <div className="mx-auto max-w-md px-5 py-8">
-        <Link href="/" className="text-sm text-slate-600">
+        <button
+          type="button"
+          onClick={() => {
+            if (questions) {
+              const ok = window.confirm("지금 나가면 퀴즈가 처음부터 시작돼! 나갈까?");
+              if (!ok) return;
+            }
+            window.location.href = "/";
+          }}
+          className="text-sm text-slate-600"
+        >
           ← 홈
-        </Link>
+        </button>
 
         <h1 className="mt-4 text-2xl font-extrabold">퀴즈풀기</h1>
         <p className="mt-2 text-slate-700">단을 고르고, 준비되면 시작 버튼을 눌러줘!</p>
