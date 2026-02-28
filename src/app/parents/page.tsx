@@ -10,6 +10,7 @@ const RESET_KEYS = [
   "gugudan.itemStats.v1",
   "gugudan.rewards.v1",
   "gugudan.settings.v1",
+  "gugudan.activeSession.v1",
 ];
 
 export default function ParentsPage() {
