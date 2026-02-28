@@ -145,6 +145,7 @@ export default function QuizPage() {
   const finalizedRef = useRef(false);
   const [picked, setPicked] = useState<number | null>(null);
   const [isRight, setIsRight] = useState<boolean | null>(null);
+  const [message, setMessage] = useState<string>("콕 누르면 바로 알려줄게!");
 
   const current = questions?.[index] ?? null;
 
@@ -161,10 +162,7 @@ export default function QuizPage() {
   }, [inProgress]);
   const total = questions?.length ?? 10;
 
-  const statusText = useMemo(() => {
-    if (picked == null) return "콕 누르면 바로 알려줄게!";
-    return isRight ? pickRandom(PRAISES) : pickRandom(ENCOURAGES);
-  }, [picked, isRight]);
+  const statusText = message;
 
   const activeSession = getActiveSession();
   useEffect(() => {
@@ -209,6 +207,8 @@ export default function QuizPage() {
     setWrongItems([]);
     setPicked(null);
     setIsRight(null);
+    setMessage("콕 누르면 바로 알려줄게!");
+    setMessage("콕 누르면 바로 알려줄게!");
     setStartedAt(Date.now());
     setIsFinalizing(false);
     finalizedRef.current = false;
@@ -221,6 +221,7 @@ export default function QuizPage() {
     if (ok) playCorrect(); else playWrong();
     setPicked(value);
     setIsRight(ok);
+    setMessage(ok ? pickRandom(PRAISES) : pickRandom(ENCOURAGES));
     if (ok) setCorrect((c) => c + 1);
     bumpItemStat(`${current.dan}x${current.right}` as ItemKey, ok);
     if (!ok) {
@@ -273,6 +274,7 @@ export default function QuizPage() {
     setIndex((i) => i + 1);
     setPicked(null);
     setIsRight(null);
+    setMessage("콕 누르면 바로 알려줄게!");
   }
 
   return (
