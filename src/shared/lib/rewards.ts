@@ -37,7 +37,7 @@ export const BADGES: Badge[] = [
 ];
 
 export type RewardState = {
-  unlocked: Record<BadgeId, string>; // ISO timestamp
+  unlocked: Partial<Record<BadgeId, string>>; // ISO timestamp
 };
 
 export const REWARDS_KEY = "gugudan.rewards.v1";
