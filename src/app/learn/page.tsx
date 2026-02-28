@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 
 type Row = { right: number; answer: number };
 
@@ -10,7 +11,9 @@ function makeTable(dan: number): Row[] {
 }
 
 export default function LearnPage() {
+  const router = useRouter();
   const [dan, setDan] = useState<number>(2);
+  const [showBridge, setShowBridge] = useState(false);
 
   const rows = useMemo(() => makeTable(dan), [dan]);
 
@@ -83,6 +86,32 @@ export default function LearnPage() {
             이 단으로 퀴즈풀기
           </Link>
         </section>
+
+
+        {showBridge && (
+          <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-4">
+            <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-xl ring-1 ring-slate-200">
+              <div className="text-xl font-extrabold">{dan}단 구경 끝!</div>
+              <div className="mt-2 text-slate-700">이제 퀴즈로 실력을 뽐내볼까?</div>
+
+              <div className="mt-5 grid grid-cols-2 gap-3">
+                <button
+                  onClick={() => setShowBridge(false)}
+                  className="h-14 rounded-2xl bg-white text-base font-extrabold text-slate-900 ring-1 ring-slate-200 active:scale-[0.99]"
+                >
+                  아직 아니야
+                </button>
+                <button
+                  onClick={() => router.push(`/quiz?dan=${dan}`)}
+                  className="h-14 rounded-2xl bg-amber-400 text-base font-extrabold text-slate-900 ring-1 ring-amber-300 active:scale-[0.99]"
+                >
+                  퀴즈 시작!
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
       </div>
     </main>
   );
