@@ -9,6 +9,7 @@ import { bumpItemStat, getItemStats, type ItemKey } from "@/shared/lib/stats";
 import { unlockBadge, type BadgeId } from "@/shared/lib/rewards";
 import { getSettings } from "@/shared/lib/settings";
 import { playCorrect, playWrong } from "@/shared/lib/sound";
+import { clearActiveSession, getActiveSession, setActiveSession, type QuizSession } from "@/shared/lib/session";
 
 type Question = {
   dan: number;
@@ -101,6 +102,14 @@ function makeWeakSession(dan: number, total = 10): Question[] {
   });
 }
 
+
+function makeSessionFromRights(dan: number, rights: number[]): Question[] {
+  return rights.map((right) => {
+    const answer = dan * right;
+    return { dan, right, answer, choices: makeChoices(answer) };
+  });
+}
+
 function makeSession(dan: number, total = 10): Question[] {
   // right 0~9를 섞어서 앞에서 total개 사용 (중복 없음)
   const rights = shuffle(Array.from({ length: 10 }, (_, i) => i)).slice(0, total);
@@ -128,6 +137,7 @@ export default function QuizPage() {
 
   const [startedAt, setStartedAt] = useState<number | null>(null);
   const [questions, setQuestions] = useState<Question[] | null>(null);
+  const [rights, setRights] = useState<number[] | null>(null);
   const [index, setIndex] = useState(0);
   const [correct, setCorrect] = useState(0);
   const [wrongItems, setWrongItems] = useState<WrongItem[]>([]);
@@ -154,12 +164,30 @@ export default function QuizPage() {
   const statusText = useMemo(() => {
     if (picked == null) return "콕 누르면 바로 알려줄게!";
     return isRight ? pickRandom(PRAISES) : pickRandom(ENCOURAGES);
+  const activeSession = getActiveSession();
+
   }, [picked, isRight]);
 
   function start() {
     if (selectedDan == null) return;
     const { quizCount } = getSettings();
-    setQuestions(mode === "weak" ? makeWeakSession(selectedDan, quizCount) : makeSession(selectedDan, quizCount));
+    const qs = mode === "weak" ? makeWeakSession(selectedDan, quizCount) : makeSession(selectedDan, quizCount);
+    setQuestions(qs);
+    setRights(qs.map((q) => q.right));
+    const now = Date.now();
+    const sid = `${now}-${Math.random().toString(16).slice(2)}`;
+    const session: QuizSession = {
+      id: sid,
+      dan: selectedDan,
+      mode,
+      total: qs.length,
+      index: 0,
+      correct: 0,
+      rights: qs.map((q) => q.right),
+      wrongItems: [],
+      startedAt: now,
+    };
+    setActiveSession(session);
     setIndex(0);
     setCorrect(0);
     setWrongItems([]);
@@ -185,6 +213,19 @@ export default function QuizPage() {
         { dan: current.dan, right: current.right, answer: current.answer, picked: value },
       ]);
     }
+    const prev = getActiveSession();
+    if (prev) {
+      const nextWrong = ok
+        ? prev.wrongItems
+        : [...prev.wrongItems, { dan: current.dan, right: current.right, answer: current.answer, picked: value }];
+      setActiveSession({
+        ...prev,
+        index,
+        correct: ok ? prev.correct + 1 : prev.correct,
+        wrongItems: nextWrong,
+      });
+    }
+
   }
 
   function next() {
@@ -219,11 +260,14 @@ export default function QuizPage() {
       const deduped = prev.filter((r) => r.id !== result.id);
       const next = [result, ...deduped].slice(0, RECENT_LIMIT);
       lsSet(RECENT_RESULTS_KEY, next);
+      clearActiveSession();
       router.push("/result");
       return;
     }
 
     setIndex((i) => i + 1);
+    const prev = getActiveSession();
+    if (prev) setActiveSession({ ...prev, index: index + 1, correct, wrongItems });
     setPicked(null);
     setIsRight(null);
   }
@@ -247,6 +291,40 @@ export default function QuizPage() {
 
         <h1 className="mt-4 text-2xl font-extrabold">퀴즈풀기</h1>
         <p className="mt-2 text-slate-700">단을 고르고, 준비되면 시작 버튼을 눌러줘!</p>
+
+        {activeSession && !questions && (
+          <section className="mt-6 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+            <div className="text-sm font-extrabold">이어서 하기</div>
+            <div className="mt-2 text-sm text-slate-700">{activeSession.dan}단 퀴즈를 이어서 할 수 있어.</div>
+            <div className="mt-4 grid grid-cols-2 gap-3">
+              <button
+                onClick={() => {
+                  setMode(activeSession.mode);
+                  setSelectedDan(activeSession.dan);
+                  const qs = makeSessionFromRights(activeSession.dan, activeSession.rights);
+                  setQuestions(qs);
+                  setRights(activeSession.rights);
+                  setIndex(activeSession.index);
+                  setCorrect(activeSession.correct);
+                  setWrongItems(activeSession.wrongItems);
+                  setStartedAt(activeSession.startedAt);
+                }}
+                className="h-14 rounded-2xl bg-amber-200 text-lg font-extrabold ring-1 ring-amber-300 active:scale-[0.99]"
+              >
+                이어서 하기
+              </button>
+              <button
+                onClick={() => {
+                  clearActiveSession();
+                  window.location.reload();
+                }}
+                className="h-14 rounded-2xl bg-white text-lg font-extrabold ring-1 ring-slate-200 active:scale-[0.99]"
+              >
+                새로 시작
+              </button>
+            </div>
+          </section>
+        )}
 
         {/* 단 선택 */}
         <section className="mt-6 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
