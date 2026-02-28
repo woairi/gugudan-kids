@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { lsGet } from "@/shared/lib/storage";
+import { isLastResult, isLastResultArray } from "@/shared/lib/validators";
 
 type WrongItem = { dan: number; right: number; answer: number; picked: number };
 
@@ -21,8 +22,8 @@ const LAST_RESULT_KEY = "gugudan.lastResult.v1";
 const RECENT_RESULTS_KEY = "gugudan.recentResults.v1";
 
 export default function ResultPage() {
-  const [result] = useState<LastResult | null>(() => lsGet<LastResult>(LAST_RESULT_KEY));
-  const [recent] = useState<LastResult[]>(() => lsGet<LastResult[]>(RECENT_RESULTS_KEY) ?? []);
+  const [result] = useState<LastResult | null>(() => lsGet<LastResult>(LAST_RESULT_KEY, isLastResult));
+  const [recent] = useState<LastResult[]>(() => lsGet<LastResult[]>(RECENT_RESULTS_KEY, isLastResultArray) ?? []);
 
   const total = result?.total ?? 10;
   const correct = result?.correct ?? 0;

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { lsGet, lsSet } from "@/shared/lib/storage";
+import { isLastResultArray } from "@/shared/lib/validators";
 import { getQueryInt } from "@/shared/lib/query";
 import { ENCOURAGES, PRAISES, pickRandom } from "@/shared/lib/phrases";
 import { bumpItemStat, getItemStats, type ItemKey } from "@/shared/lib/stats";
@@ -192,7 +193,7 @@ export default function QuizPage() {
       unlockBadge(danBadge, atIso);
       if (result.correct === result.total) unlockBadge("perfect-10", atIso);
 
-      const prev = lsGet<LastResult[]>(RECENT_RESULTS_KEY) ?? [];
+      const prev = lsGet<LastResult[]>(RECENT_RESULTS_KEY, isLastResultArray) ?? [];
       const deduped = prev.filter((r) => r.id !== result.id);
       const next = [result, ...deduped].slice(0, RECENT_LIMIT);
       lsSet(RECENT_RESULTS_KEY, next);

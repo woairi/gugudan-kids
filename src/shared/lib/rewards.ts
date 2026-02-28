@@ -1,4 +1,5 @@
 import { lsGet, lsSet } from "./storage";
+import { isRewardState } from "./validators";
 
 export type BadgeId =
   | "first-quiz"
@@ -43,7 +44,7 @@ export type RewardState = {
 export const REWARDS_KEY = "gugudan.rewards.v1";
 
 export function getRewards(): RewardState {
-  return lsGet<RewardState>(REWARDS_KEY) ?? { unlocked: {} };
+  return lsGet<RewardState>(REWARDS_KEY, isRewardState) ?? { unlocked: {} };
 }
 
 export function unlockBadge(id: BadgeId, atIso: string): boolean {

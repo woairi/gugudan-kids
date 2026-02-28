@@ -1,4 +1,5 @@
 import { lsGet, lsSet } from "./storage";
+import { isItemStats } from "./validators";
 
 export type ItemKey = `${number}x${number}`;
 
@@ -12,7 +13,7 @@ export type ItemStats = Record<ItemKey, ItemStat>;
 export const ITEM_STATS_KEY = "gugudan.itemStats.v1";
 
 export function getItemStats(): ItemStats {
-  return lsGet<ItemStats>(ITEM_STATS_KEY) ?? {};
+  return lsGet<ItemStats>(ITEM_STATS_KEY, isItemStats) ?? {};
 }
 
 export function bumpItemStat(key: ItemKey, isCorrect: boolean): void {

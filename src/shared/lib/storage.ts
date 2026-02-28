@@ -1,15 +1,20 @@
-export function safeJsonParse<T>(value: string | null): T | null {
+export function safeJsonParse(value: string | null): unknown {
   if (!value) return null;
   try {
-    return JSON.parse(value) as T;
+    return JSON.parse(value);
   } catch {
     return null;
   }
 }
 
-export function lsGet<T>(key: string): T | null {
+type Validator<T> = (value: unknown) => value is T;
+
+export function lsGet<T>(key: string, validate?: Validator<T>): T | null {
   if (typeof window === "undefined") return null;
-  return safeJsonParse<T>(window.localStorage.getItem(key));
+  const raw = safeJsonParse(window.localStorage.getItem(key));
+  if (raw == null) return null;
+  if (!validate) return raw as T;
+  return validate(raw) ? raw : null;
 }
 
 export function lsSet(key: string, value: unknown): void {
