@@ -14,6 +14,7 @@ export default function LearnPage() {
   const router = useRouter();
   const [dan, setDan] = useState<number>(2);
   const [showBridge, setShowBridge] = useState(false);
+  const [randomRight, setRandomRight] = useState<number>(0);
 
   const rows = useMemo(() => makeTable(dan), [dan]);
 
@@ -65,6 +66,20 @@ export default function LearnPage() {
 
         <section className="mt-6 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
           <div className="text-sm text-slate-600">{dan}단 표</div>
+          <div className="flex items-center justify-between">
+            <div className="text-sm font-extrabold">랜덤 한 줄 복습</div>
+            <button
+              onClick={() => setRandomRight(Math.floor(Math.random() * 10))}
+              className="h-10 rounded-2xl bg-amber-200 px-4 text-sm font-extrabold ring-1 ring-amber-300 active:scale-[0.99]"
+            >
+              뽑기!
+            </button>
+          </div>
+          <div className="mt-3 rounded-2xl bg-amber-50 p-4 ring-1 ring-amber-200">
+            <div className="text-xl font-extrabold">{dan} × {randomRight} = {dan * randomRight}</div>
+            <div className="mt-1 text-sm text-slate-700">소리 내서 한 번 읽어봐!</div>
+          </div>
+
           <div className="mt-3 grid gap-2">
             {rows.map((r) => (
               <div
