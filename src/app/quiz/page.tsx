@@ -62,10 +62,10 @@ function makeChoices(correct: number): number[] {
 }
 
 
-function makeWeakSession(dan: number, total = 10): Question[] {
+function makeWeakSession(dan: number, maxRight: number, total = 10): Question[] {
   const stats = getItemStats();
   // build candidates for this dan (0~9)
-  const candidates = Array.from({ length: 10 }, (_, right) => {
+  const candidates = Array.from({ length: maxRight + 1 }, (_, right) => {
     const key = `${dan}x${right}` as ItemKey;
     const s = stats[key];
     const wrong = s?.wrong ?? 0;
@@ -90,7 +90,7 @@ function makeWeakSession(dan: number, total = 10): Question[] {
   }
 
   // if not enough known-weak items, fill with random unique rights
-  const pool = shuffle(Array.from({ length: 10 }, (_, i) => i));
+  const pool = shuffle(Array.from({ length: maxRight + 1 }, (_, i) => i));
   for (const r of pool) {
     if (pickedRights.length >= total) break;
     if (!pickedRights.includes(r)) pickedRights.push(r);
@@ -110,9 +110,9 @@ function makeSessionFromRights(dan: number, rights: number[]): Question[] {
   });
 }
 
-function makeSession(dan: number, total = 10): Question[] {
+function makeSession(dan: number, maxRight: number, total = 10): Question[] {
   // right 0~9를 섞어서 앞에서 total개 사용 (중복 없음)
-  const rights = shuffle(Array.from({ length: 10 }, (_, i) => i)).slice(0, total);
+  const rights = shuffle(Array.from({ length: maxRight + 1 }, (_, i) => i)).slice(0, total);
   return rights.map((right) => {
     const answer = dan * right;
     return { dan, right, answer, choices: makeChoices(answer) };
@@ -186,8 +186,8 @@ export default function QuizPage() {
 
   function start() {
     if (selectedDan == null) return;
-    const { quizCount } = getSettings();
-    const qs = mode === "weak" ? makeWeakSession(selectedDan, quizCount) : makeSession(selectedDan, quizCount);
+    const { quizCount, maxRight } = getSettings();
+    const qs = mode === "weak" ? makeWeakSession(selectedDan, maxRight, quizCount) : makeSession(selectedDan, maxRight, quizCount);
     setQuestions(qs);
     const now = Date.now();
     const sid = `${now}-${Math.random().toString(16).slice(2)}`;
@@ -362,7 +362,7 @@ export default function QuizPage() {
             {mode === "weak" ? "틀린 적이 많은 문제부터 나와요." : "준비되면 시작! (처음엔 천천히 해도 돼)"}
           </div>
           <div className="mt-3 grid grid-cols-5 gap-2">
-            {Array.from({ length: 10 }, (_, i) => i).map((dan) => {
+            {Array.from({ length: maxRight + 1 }, (_, i) => i).map((dan) => {
               const active = selectedDan === dan;
               return (
                 <button

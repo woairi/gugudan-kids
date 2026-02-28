@@ -30,7 +30,7 @@ export default function ParentsPage() {
     try {
       for (const k of RESET_KEYS) window.localStorage.removeItem(k);
       window.alert("지웠어! 다시 처음부터 시작할 수 있어.");
-      setLocalSettings({ soundOn: false, quizCount: 10 });
+      setLocalSettings({ soundOn: false, quizCount: 10, maxRight: 9 });
       window.location.href = "/";
     } catch {
       window.alert("지우는 중 문제가 생겼어. 다시 한 번 해볼까?");
