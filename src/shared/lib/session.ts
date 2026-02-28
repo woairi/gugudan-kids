@@ -15,6 +15,7 @@ export type QuizSession = {
 };
 
 export const SESSION_KEY = "gugudan.activeSession.v1";
+export const SESSION_MAX_AGE_MS = 24 * 60 * 60 * 1000;
 
 function isNumberArray(v: unknown): v is number[] {
   return Array.isArray(v) && v.every((x) => typeof x === "number");
@@ -37,7 +38,10 @@ export function isQuizSession(value: unknown): value is QuizSession {
 }
 
 export function getActiveSession(): QuizSession | null {
-  return lsGet<QuizSession>(SESSION_KEY, isQuizSession);
+  const s = lsGet<QuizSession>(SESSION_KEY, isQuizSession);
+  if (!s) return null;
+  if (Date.now() - s.startedAt > SESSION_MAX_AGE_MS) return null;
+  return s;
 }
 
 export function setActiveSession(session: QuizSession) {
