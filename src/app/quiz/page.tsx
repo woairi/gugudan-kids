@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { lsGet, lsSet } from "@/shared/lib/storage";
 import { isLastResultArray } from "@/shared/lib/validators";
@@ -113,21 +113,17 @@ export default function QuizPage() {
   const router = useRouter();
 
   const [mode, setMode] = useState<Mode>("dan");
-  const [selectedDan, setSelectedDan] = useState<number | null>(null);
-
-  useEffect(() => {
-    // apply query param dan after hydration (no next/navigation hooks)
+  const [selectedDan, setSelectedDan] = useState<number | null>(() => {
+    if (typeof window === "undefined") return null;
     try {
       const url = new URL(window.location.href);
       const q = url.searchParams.get("dan");
       const n = q != null ? Number(q) : NaN;
-      if (Number.isFinite(n) && n >= 0 && n <= 9) {
-        setSelectedDan(n);
-      }
+      return Number.isFinite(n) && n >= 0 && n <= 9 ? n : null;
     } catch {
-      // ignore
+      return null;
     }
-  }, []);
+  });
 
   const [startedAt, setStartedAt] = useState<number | null>(null);
   const [questions, setQuestions] = useState<Question[] | null>(null);
