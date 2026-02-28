@@ -34,13 +34,16 @@ export default function CollectionPage() {
               <div
                 key={b.id}
                 className={
-                  "rounded-2xl p-5 shadow-sm ring-1 " +
+                  "relative rounded-2xl p-5 shadow-sm ring-1 " +
                   (unlocked
                     ? "bg-white ring-emerald-200"
-                    : "bg-slate-100 text-slate-500 ring-slate-200")
+                    : "bg-slate-100 text-slate-500 ring-slate-200 border border-dashed border-slate-300")
                 }
               >
                 <div className="flex items-center justify-between">
+                  {!unlocked && (
+                    <div className="absolute right-4 top-4 rounded-full bg-white px-2 py-1 text-xs font-extrabold ring-1 ring-slate-200">🔒</div>
+                  )}
                   <div className={"text-2xl " + (unlocked ? "" : "opacity-40")}>{b.emoji}</div>
                   <div className="text-xs">
                     {unlocked ? "획득!" : "🔒 아직 못 받았어"}
