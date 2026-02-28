@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { lsGet } from "@/shared/lib/storage";
 
 type LastResult = {
@@ -16,11 +16,7 @@ type LastResult = {
 const LAST_RESULT_KEY = "gugudan.lastResult.v1";
 
 export default function ResultPage() {
-  const [result, setResult] = useState<LastResult | null>(null);
-
-  useEffect(() => {
-    setResult(lsGet<LastResult>(LAST_RESULT_KEY));
-  }, []);
+  const [result] = useState<LastResult | null>(() => lsGet<LastResult>(LAST_RESULT_KEY));
 
   const total = result?.total ?? 10;
   const correct = result?.correct ?? 0;
