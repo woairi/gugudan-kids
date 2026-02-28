@@ -46,6 +46,12 @@ export default function ParentsPage() {
         <h1 className="mt-4 text-2xl font-extrabold">보호자 설정</h1>
         <p className="mt-2 text-slate-700">설정과 초기화를 할 수 있어요.</p>
 
+        {toast && (
+          <div className="mt-4 rounded-2xl bg-emerald-100 px-4 py-3 text-sm font-extrabold text-emerald-800 ring-1 ring-emerald-200">
+            {toast}
+          </div>
+        )}
+
         <section className="mt-6 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
           <div className="text-sm font-extrabold">사운드</div>
           <p className="mt-2 text-sm text-slate-600">정답/오답 때 짧게 소리가 나요.</p>
