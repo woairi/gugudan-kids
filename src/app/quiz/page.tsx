@@ -7,6 +7,7 @@ import { lsGet, lsSet } from "@/shared/lib/storage";
 import { getQueryInt } from "@/shared/lib/query";
 import { ENCOURAGES, PRAISES, pickRandom } from "@/shared/lib/phrases";
 import { bumpItemStat, getItemStats, type ItemKey } from "@/shared/lib/stats";
+import { unlockBadge, type BadgeId } from "@/shared/lib/rewards";
 
 type Question = {
   dan: number;
@@ -174,6 +175,13 @@ export default function QuizPage() {
         wrongItems,
       };
       lsSet(LAST_RESULT_KEY, result);
+      // rewards
+      const atIso = result.at;
+      unlockBadge("first-quiz", atIso);
+      const danBadge = (`dan-${result.dan}`) as BadgeId;
+      unlockBadge(danBadge, atIso);
+      if (result.correct === result.total) unlockBadge("perfect-10", atIso);
+
       const prev = lsGet<LastResult[]>(RECENT_RESULTS_KEY) ?? [];
       const next = [result, ...prev].slice(0, RECENT_LIMIT);
       lsSet(RECENT_RESULTS_KEY, next);
