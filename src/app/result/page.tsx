@@ -7,6 +7,7 @@ import { lsGet } from "@/shared/lib/storage";
 type WrongItem = { dan: number; right: number; answer: number; picked: number };
 
 type LastResult = {
+  id: string;
   at: string;
   dan: number;
   total: number;

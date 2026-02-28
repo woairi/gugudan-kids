@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { lsGet, lsSet } from "@/shared/lib/storage";
 import { getQueryInt } from "@/shared/lib/query";
@@ -21,6 +21,7 @@ type Mode = "dan" | "weak";
 type WrongItem = { dan: number; right: number; answer: number; picked: number };
 
 type LastResult = {
+  id: string;
   at: string;
   dan: number;
   total: number;
@@ -121,6 +122,8 @@ export default function QuizPage() {
   const [index, setIndex] = useState(0);
   const [correct, setCorrect] = useState(0);
   const [wrongItems, setWrongItems] = useState<WrongItem[]>([]);
+  const [isFinalizing, setIsFinalizing] = useState(false);
+  const finalizedRef = useRef(false);
   const [picked, setPicked] = useState<number | null>(null);
   const [isRight, setIsRight] = useState<boolean | null>(null);
 
@@ -141,6 +144,8 @@ export default function QuizPage() {
     setPicked(null);
     setIsRight(null);
     setStartedAt(Date.now());
+    setIsFinalizing(false);
+    finalizedRef.current = false;
   }
 
   function pickChoice(value: number) {
@@ -163,9 +168,14 @@ export default function QuizPage() {
     if (!questions) return;
     const last = index >= questions.length - 1;
     if (last) {
+      if (finalizedRef.current || isFinalizing) return;
+      finalizedRef.current = true;
+      setIsFinalizing(true);
       const now = Date.now();
+      const sessionId = `${now}-${Math.random().toString(16).slice(2)}`;
       const msTotal = startedAt ? now - startedAt : 0;
       const result: LastResult = {
+        id: sessionId,
         at: new Date(now).toISOString(),
         dan: selectedDan ?? 0,
         total: questions.length,
@@ -183,7 +193,8 @@ export default function QuizPage() {
       if (result.correct === result.total) unlockBadge("perfect-10", atIso);
 
       const prev = lsGet<LastResult[]>(RECENT_RESULTS_KEY) ?? [];
-      const next = [result, ...prev].slice(0, RECENT_LIMIT);
+      const deduped = prev.filter((r) => r.id !== result.id);
+      const next = [result, ...deduped].slice(0, RECENT_LIMIT);
       lsSet(RECENT_RESULTS_KEY, next);
       router.push("/result");
       return;
@@ -311,7 +322,7 @@ export default function QuizPage() {
 
             <button
               onClick={next}
-              disabled={picked == null}
+              disabled={picked == null || isFinalizing}
               className={
                 "mt-4 h-14 w-full rounded-2xl text-lg font-extrabold shadow-sm active:scale-[0.99] " +
                 (picked == null
