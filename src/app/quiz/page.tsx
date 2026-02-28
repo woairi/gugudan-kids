@@ -137,6 +137,7 @@ export default function QuizPage() {
 
   const [startedAt, setStartedAt] = useState<number | null>(null);
   const [questions, setQuestions] = useState<Question[] | null>(null);
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const [index, setIndex] = useState(0);
   const [correct, setCorrect] = useState(0);
   const [wrongItems, setWrongItems] = useState<WrongItem[]>([]);
@@ -166,6 +167,22 @@ export default function QuizPage() {
   }, [picked, isRight]);
 
   const activeSession = getActiveSession();
+  useEffect(() => {
+    if (!questions || sessionId == null || selectedDan == null) return;
+    const session: QuizSession = {
+      id: sessionId,
+      dan: selectedDan,
+      mode,
+      total: questions.length,
+      index,
+      correct,
+      rights: questions.map((q) => q.right),
+      wrongItems,
+      startedAt: startedAt ?? Date.now(),
+    };
+    setActiveSession(session);
+  }, [questions, sessionId, selectedDan, mode, index, correct, wrongItems, startedAt]);
+
 
   function start() {
     if (selectedDan == null) return;
@@ -174,6 +191,7 @@ export default function QuizPage() {
     setQuestions(qs);
     const now = Date.now();
     const sid = `${now}-${Math.random().toString(16).slice(2)}`;
+    setSessionId(sid);
     const session: QuizSession = {
       id: sid,
       dan: selectedDan,
@@ -211,18 +229,6 @@ export default function QuizPage() {
         { dan: current.dan, right: current.right, answer: current.answer, picked: value },
       ]);
     }
-    const prev = getActiveSession();
-    if (prev) {
-      const nextWrong = ok
-        ? prev.wrongItems
-        : [...prev.wrongItems, { dan: current.dan, right: current.right, answer: current.answer, picked: value }];
-      setActiveSession({
-        ...prev,
-        index,
-        correct: ok ? prev.correct + 1 : prev.correct,
-        wrongItems: nextWrong,
-      });
-    }
 
   }
 
@@ -259,13 +265,12 @@ export default function QuizPage() {
       const next = [result, ...deduped].slice(0, RECENT_LIMIT);
       lsSet(RECENT_RESULTS_KEY, next);
       clearActiveSession();
+      setSessionId(null);
       router.push("/result");
       return;
     }
 
     setIndex((i) => i + 1);
-    const prev = getActiveSession();
-    if (prev) setActiveSession({ ...prev, index: index + 1, correct, wrongItems });
     setPicked(null);
     setIsRight(null);
   }
@@ -313,6 +318,7 @@ export default function QuizPage() {
               <button
                 onClick={() => {
                   clearActiveSession();
+                  setSessionId(null);
                   window.location.reload();
                 }}
                 className="h-14 rounded-2xl bg-white text-lg font-extrabold ring-1 ring-slate-200 active:scale-[0.99]"
