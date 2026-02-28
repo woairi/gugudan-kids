@@ -49,5 +49,10 @@ export function setActiveSession(session: QuizSession) {
 }
 
 export function clearActiveSession() {
-  lsSet(SESSION_KEY, null);
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.removeItem(SESSION_KEY);
+  } catch {
+    // ignore
+  }
 }
