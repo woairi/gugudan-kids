@@ -221,7 +221,7 @@ export default function QuizPage() {
         </Link>
 
         <h1 className="mt-4 text-2xl font-extrabold">퀴즈풀기</h1>
-        <p className="mt-2 text-slate-700">단을 고르고 10문제로 가볍게 연습해요.</p>
+        <p className="mt-2 text-slate-700">단을 고르고, 준비되면 시작 버튼을 눌러줘!</p>
 
         {/* 단 선택 */}
         <section className="mt-6 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
@@ -247,7 +247,7 @@ export default function QuizPage() {
             </button>
           </div>
           <div className="mt-2 text-sm text-slate-600">
-            {mode === "weak" ? "틀린 적이 많은 문제부터 나와요." : "선택한 단에서 랜덤으로 나와요."}
+            {mode === "weak" ? "틀린 적이 많은 문제부터 나와요." : "준비되면 시작! (처음엔 천천히 해도 돼)"}
           </div>
           <div className="mt-3 grid grid-cols-5 gap-2">
             {Array.from({ length: 10 }, (_, i) => i).map((dan) => {
