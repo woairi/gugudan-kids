@@ -3,7 +3,9 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { lsSet } from "@/shared/lib/storage";
+import { lsGet, lsSet } from "@/shared/lib/storage";
+import { getQueryInt } from "@/shared/lib/query";
+import { ENCOURAGES, PRAISES, pickRandom } from "@/shared/lib/phrases";
 
 type Question = {
   dan: number;
@@ -22,6 +24,8 @@ type LastResult = {
 };
 
 const LAST_RESULT_KEY = "gugudan.lastResult.v1";
+const RECENT_RESULTS_KEY = "gugudan.recentResults.v1";
+const RECENT_LIMIT = 10;
 
 function randInt(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -59,7 +63,10 @@ function makeSession(dan: number, total = 10): Question[] {
 export default function QuizPage() {
   const router = useRouter();
 
-  const [selectedDan, setSelectedDan] = useState<number | null>(null);
+  const [selectedDan, setSelectedDan] = useState<number | null>(() => {
+    const q = getQueryInt("dan");
+    return q != null && q >= 0 && q <= 9 ? q : null;
+  });
   const [startedAt, setStartedAt] = useState<number | null>(null);
   const [questions, setQuestions] = useState<Question[] | null>(null);
   const [index, setIndex] = useState(0);
@@ -72,7 +79,7 @@ export default function QuizPage() {
 
   const statusText = useMemo(() => {
     if (picked == null) return "선택하면 바로 채점해줄게!";
-    return isRight ? "정답! 잘했어!" : "아쉽다! 다음 문제로 가볼까?";
+    return isRight ? pickRandom(PRAISES) : pickRandom(ENCOURAGES);
   }, [picked, isRight]);
 
   function start() {
@@ -109,6 +116,9 @@ export default function QuizPage() {
         perQuestionMsAvg: questions.length ? Math.round(msTotal / questions.length) : 0,
       };
       lsSet(LAST_RESULT_KEY, result);
+      const prev = lsGet<LastResult[]>(RECENT_RESULTS_KEY) ?? [];
+      const next = [result, ...prev].slice(0, RECENT_LIMIT);
+      lsSet(RECENT_RESULTS_KEY, next);
       router.push("/result");
       return;
     }

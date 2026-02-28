@@ -14,9 +14,11 @@ type LastResult = {
 };
 
 const LAST_RESULT_KEY = "gugudan.lastResult.v1";
+const RECENT_RESULTS_KEY = "gugudan.recentResults.v1";
 
 export default function ResultPage() {
   const [result] = useState<LastResult | null>(() => lsGet<LastResult>(LAST_RESULT_KEY));
+  const [recent] = useState<LastResult[]>(() => lsGet<LastResult[]>(RECENT_RESULTS_KEY) ?? []);
 
   const total = result?.total ?? 10;
   const correct = result?.correct ?? 0;
@@ -41,6 +43,24 @@ export default function ResultPage() {
 
           <div className="mt-4 text-sm text-slate-600">
             평균 시간: {result ? `${Math.round(result.perQuestionMsAvg / 100) / 10}s/문제` : "-"}
+          </div>
+
+          <div className="mt-6 rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-200">
+            <div className="text-sm font-extrabold">최근 기록</div>
+            <div className="mt-2 grid gap-2">
+              {recent.slice(0, 5).map((r, i) => {
+                const rate = r.total ? Math.round((r.correct / r.total) * 100) : 0;
+                return (
+                  <div key={r.at + i} className="flex items-center justify-between rounded-2xl bg-white px-4 py-3 ring-1 ring-slate-200">
+                    <div className="text-sm font-bold">{r.dan}단</div>
+                    <div className="text-sm text-slate-700">{r.correct}/{r.total} ({rate}%)</div>
+                  </div>
+                );
+              })}
+              {recent.length === 0 && (
+                <div className="text-sm text-slate-600">아직 기록이 없어요.</div>
+              )}
+            </div>
           </div>
 
           <div className="mt-6 grid grid-cols-2 gap-3">
