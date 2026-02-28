@@ -17,6 +17,8 @@ type Question = {
 
 type Mode = "dan" | "weak";
 
+type WrongItem = { dan: number; right: number; answer: number; picked: number };
+
 type LastResult = {
   at: string;
   dan: number;
@@ -24,6 +26,7 @@ type LastResult = {
   correct: number;
   msTotal: number;
   perQuestionMsAvg: number;
+  wrongItems: WrongItem[];
 };
 
 const LAST_RESULT_KEY = "gugudan.lastResult.v1";
@@ -116,6 +119,7 @@ export default function QuizPage() {
   const [questions, setQuestions] = useState<Question[] | null>(null);
   const [index, setIndex] = useState(0);
   const [correct, setCorrect] = useState(0);
+  const [wrongItems, setWrongItems] = useState<WrongItem[]>([]);
   const [picked, setPicked] = useState<number | null>(null);
   const [isRight, setIsRight] = useState<boolean | null>(null);
 
@@ -132,6 +136,7 @@ export default function QuizPage() {
     setQuestions(mode === "weak" ? makeWeakSession(selectedDan, 10) : makeSession(selectedDan, 10));
     setIndex(0);
     setCorrect(0);
+    setWrongItems([]);
     setPicked(null);
     setIsRight(null);
     setStartedAt(Date.now());

@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { lsGet } from "@/shared/lib/storage";
 
+type WrongItem = { dan: number; right: number; answer: number; picked: number };
+
 type LastResult = {
   at: string;
   dan: number;
@@ -11,6 +13,7 @@ type LastResult = {
   correct: number;
   msTotal: number;
   perQuestionMsAvg: number;
+  wrongItems: WrongItem[];
 };
 
 const LAST_RESULT_KEY = "gugudan.lastResult.v1";
@@ -43,6 +46,36 @@ export default function ResultPage() {
 
           <div className="mt-4 text-sm text-slate-600">
             평균 시간: {result ? `${Math.round(result.perQuestionMsAvg / 100) / 10}s/문제` : "-"}
+          </div>
+
+          <div className="mt-6 rounded-2xl bg-rose-50 p-4 ring-1 ring-rose-200">
+            <div className="text-sm font-extrabold">오답노트</div>
+            <div className="mt-2 grid gap-2">
+              {(result?.wrongItems ?? []).slice(0, 5).map((w, i) => (
+                <div
+                  key={`${w.dan}x${w.right}-${i}`}
+                  className="flex items-center justify-between rounded-2xl bg-white px-4 py-3 ring-1 ring-rose-200"
+                >
+                  <div className="text-sm font-bold">
+                    {w.dan} × {w.right}
+                  </div>
+                  <div className="text-sm text-slate-700">
+                    정답 {w.answer} / 내가 {w.picked}
+                  </div>
+                </div>
+              ))}
+              {(result?.wrongItems?.length ?? 0) === 0 && (
+                <div className="text-sm text-slate-600">오답이 없어요! 최고!</div>
+              )}
+            </div>
+            {result && (result.wrongItems?.length ?? 0) > 0 && (
+              <Link
+                href={`/quiz?dan=${result.dan}`}
+                className="mt-3 block h-12 rounded-2xl bg-amber-200 text-center text-base font-extrabold leading-[3rem] text-slate-900 ring-1 ring-amber-300 active:scale-[0.99]"
+              >
+                이 단 다시 연습하기
+              </Link>
+            )}
           </div>
 
           <div className="mt-6 rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-200">
