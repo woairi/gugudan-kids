@@ -44,10 +44,10 @@ export default function ResultPage() {
           <div className="mt-5 text-5xl font-extrabold">
             {correct}/{total}
           </div>
-          <div className="mt-1 text-slate-700">정답률 {rate}%</div>
+          <div className="mt-1 text-slate-700">맞춘 비율 {rate}%</div>
 
           <div className="mt-4 text-sm text-slate-600">
-            평균 시간: {result ? `${Math.round(result.perQuestionMsAvg / 100) / 10}s/문제` : "-"}
+            평균 속도: {result ? `${Math.round(result.perQuestionMsAvg / 100) / 10}s/문제` : "-"}
           </div>
 
           <div className="mt-6 rounded-2xl bg-rose-50 p-4 ring-1 ring-rose-200">
@@ -81,7 +81,7 @@ export default function ResultPage() {
           </div>
 
           <div className="mt-6 rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-200">
-            <div className="text-sm font-extrabold">최근 기록(표정)</div>
+            <div className="text-sm font-extrabold">최근 기록</div>
             <div className="mt-2 grid gap-2">
               {recent.slice(0, 5).map((r, i) => {
                 const rate = r.total ? Math.round((r.correct / r.total) * 100) : 0;
