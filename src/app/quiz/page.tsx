@@ -298,7 +298,7 @@ export default function QuizPage() {
         {activeSession && !questions && (
           <section className="mt-6 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
             <div className="text-sm font-extrabold">이어서 하기</div>
-            <div className="mt-2 text-sm text-slate-700">{activeSession.dan}단 퀴즈를 이어서 할 수 있어.</div>
+            <div className="mt-2 text-sm text-slate-700">{activeSession.dan}단 퀴즈를 이어서 할 수 있어! ({activeSession.index + 1}/{activeSession.total})</div>
             <div className="mt-4 grid grid-cols-2 gap-3">
               <button
                 onClick={() => {
@@ -319,7 +319,13 @@ export default function QuizPage() {
                 onClick={() => {
                   clearActiveSession();
                   setSessionId(null);
-                  window.location.reload();
+                  setQuestions(null);
+                  setIndex(0);
+                  setCorrect(0);
+                  setWrongItems([]);
+                  setPicked(null);
+                  setIsRight(null);
+                  setStartedAt(null);
                 }}
                 className="h-14 rounded-2xl bg-white text-lg font-extrabold ring-1 ring-slate-200 active:scale-[0.99]"
               >
