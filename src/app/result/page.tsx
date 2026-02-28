@@ -51,7 +51,7 @@ export default function ResultPage() {
           </div>
 
           <div className="mt-6 rounded-2xl bg-rose-50 p-4 ring-1 ring-rose-200">
-            <div className="text-sm font-extrabold">오답노트</div>
+            <div className="text-sm font-extrabold">다시 풀어볼 문제</div>
             <div className="mt-2 grid gap-2">
               {(result?.wrongItems ?? []).slice(0, 5).map((w, i) => (
                 <div
@@ -67,7 +67,7 @@ export default function ResultPage() {
                 </div>
               ))}
               {(result?.wrongItems?.length ?? 0) === 0 && (
-                <div className="text-sm text-slate-600">오답이 없어요! 최고!</div>
+                <div className="text-sm text-slate-600">다시 풀어볼 문제가 없어요! 최고!</div>
               )}
             </div>
             {result && (result.wrongItems?.length ?? 0) > 0 && (
