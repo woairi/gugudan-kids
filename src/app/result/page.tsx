@@ -81,14 +81,14 @@ export default function ResultPage() {
           </div>
 
           <div className="mt-6 rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-200">
-            <div className="text-sm font-extrabold">최근 기록</div>
+            <div className="text-sm font-extrabold">최근 기록(표정)</div>
             <div className="mt-2 grid gap-2">
               {recent.slice(0, 5).map((r, i) => {
                 const rate = r.total ? Math.round((r.correct / r.total) * 100) : 0;
                 return (
                   <div key={r.at + i} className="flex items-center justify-between rounded-2xl bg-white px-4 py-3 ring-1 ring-slate-200">
                     <div className="text-sm font-bold">{r.dan}단</div>
-                    <div className="text-sm text-slate-700">{r.correct}/{r.total} ({rate}%)</div>
+                    <div className="text-sm text-slate-700">{rate >= 90 ? "😄😄😄" : rate >= 70 ? "😄😄" : rate >= 50 ? "😄" : "🙂"}</div>
                   </div>
                 );
               })}
