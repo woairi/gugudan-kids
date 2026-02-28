@@ -44,19 +44,19 @@ export default function ResultPage() {
           <div className="mt-5 text-5xl font-extrabold">
             {correct}/{total}
           </div>
-          <div className="mt-1 text-slate-700">맞춘 비율 {rate}%</div>
+          <div className="mt-1 text-slate-700">맞춘 비율 {rate >= 90 ? "🌟🌟🌟" : rate >= 70 ? "🌟🌟" : rate >= 50 ? "🌟" : "🙂"}  ( {rate}% )</div>
 
           <div className="mt-4 text-sm text-slate-600">
             평균 속도: {result ? `${Math.round(result.perQuestionMsAvg / 100) / 10}s/문제` : "-"}
           </div>
 
-          <div className="mt-6 rounded-2xl bg-rose-50 p-4 ring-1 ring-rose-200">
+          <div className="mt-6 rounded-2xl bg-amber-50 p-4 ring-1 ring-amber-200">
             <div className="text-sm font-extrabold">다시 풀어볼 문제</div>
             <div className="mt-2 grid gap-2">
               {(result?.wrongItems ?? []).slice(0, 5).map((w, i) => (
                 <div
                   key={`${w.dan}x${w.right}-${i}`}
-                  className="flex items-center justify-between rounded-2xl bg-white px-4 py-3 ring-1 ring-rose-200"
+                  className="flex items-center justify-between rounded-2xl bg-white px-4 py-3 ring-1 ring-amber-200"
                 >
                   <div className="text-sm font-bold">
                     {w.dan} × {w.right}
