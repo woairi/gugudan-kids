@@ -14,9 +14,13 @@ const RESET_KEYS = [
 
 export default function ParentsPage() {
   const [settings, setLocalSettings] = useState<Settings>(() => getSettings());
+  const [toast, setToast] = useState<string | null>(null);
 
   useEffect(() => {
     setSettings(settings);
+    setToast("저장됐어!");
+    const t = window.setTimeout(() => setToast(null), 1200);
+    return () => window.clearTimeout(t);
   }, [settings]);
 
   function resetAll() {
