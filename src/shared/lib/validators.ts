@@ -7,7 +7,7 @@ export function isRecord(value: unknown): value is Record<string, unknown> {
 
 export function isRewardState(value: unknown): value is RewardState {
   if (!isRecord(value)) return false;
-  const unlocked = (value as any).unlocked;
+  const unlocked = (value as { unlocked?: unknown }).unlocked;
   if (unlocked === undefined) return true; // allow empty
   return isRecord(unlocked) && Object.values(unlocked).every((v) => typeof v === "string");
 }
@@ -17,8 +17,8 @@ export function isItemStats(value: unknown): value is ItemStats {
   for (const [k, v] of Object.entries(value)) {
     if (typeof k !== "string") return false;
     if (!isRecord(v)) return false;
-    const attempts = (v as any).attempts;
-    const wrong = (v as any).wrong;
+    const attempts = (v as { attempts?: unknown }).attempts;
+    const wrong = (v as { wrong?: unknown }).wrong;
     if (typeof attempts !== "number" || typeof wrong !== "number") return false;
   }
   return true;
@@ -37,7 +37,7 @@ export type LastResult = {
 
 export function isLastResult(value: unknown): value is LastResult {
   if (!isRecord(value)) return false;
-  const v = value as any;
+  const v = value as Record<string, unknown>;
   return (
     typeof v.id === "string" &&
     typeof v.at === "string" &&
