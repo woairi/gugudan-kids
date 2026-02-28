@@ -98,6 +98,32 @@ export default function ParentsPage() {
         </section>
 
         <section className="mt-6 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+          <div className="text-sm font-extrabold">난이도</div>
+          <p className="mt-2 text-sm text-slate-600">곱하는 수를 어디까지 할지 정해요.</p>
+
+          <div className="mt-4 grid grid-cols-2 gap-3">
+            {[9, 12].map((n) => {
+              const active = settings.maxRight === n;
+              return (
+                <button
+                  key={n}
+                  onClick={() => {
+                    setLocalSettings((s) => ({ ...s, maxRight: n as 9 | 12 }));
+                    showToast();
+                  }}
+                  className={
+                    "h-14 rounded-2xl text-lg font-extrabold ring-1 active:scale-[0.99] " +
+                    (active ? "bg-amber-200 ring-amber-300" : "bg-white ring-slate-200")
+                  }
+                >
+                  0~{n}
+                </button>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="mt-6 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
           <div className="text-sm font-extrabold">데이터 초기화</div>
           <p className="mt-2 text-sm text-slate-600">
             퀴즈 기록, 약한문제 통계, 스티커, 설정을 모두 지워요.
