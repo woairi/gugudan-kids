@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 
 export default function HomePage() {
   return (
@@ -36,13 +39,7 @@ export default function HomePage() {
               <div className="font-bold">스티커</div>
               <div className="text-xs text-slate-600">모아보기</div>
             </Link>
-            <Link
-              href="/parents"
-              className="rounded-2xl bg-white p-4 text-center shadow-sm ring-1 ring-slate-200 active:scale-[0.99]"
-            >
-              <div className="font-bold">보호자</div>
-              <div className="text-xs text-slate-600">설정</div>
-            </Link>
+            <ParentsGateButton />
           </div>
         </div>
 
@@ -51,5 +48,66 @@ export default function HomePage() {
         </footer>
       </div>
     </main>
+  );
+}
+
+
+function ParentsGateButton() {
+  const [holding, setHolding] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const timerRef = useRef<number | null>(null);
+  const startAtRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) window.clearInterval(timerRef.current);
+    };
+  }, []);
+
+  function startHold() {
+    if (holding) return;
+    setHolding(true);
+    setProgress(0);
+    startAtRef.current = Date.now();
+    timerRef.current = window.setInterval(() => {
+      const startAt = startAtRef.current ?? Date.now();
+      const elapsed = Date.now() - startAt;
+      const p = Math.min(100, Math.round((elapsed / 2000) * 100));
+      setProgress(p);
+      if (elapsed >= 2000) {
+        window.clearInterval(timerRef.current!);
+        timerRef.current = null;
+        window.location.href = "/parents";
+      }
+    }, 50);
+  }
+
+  function stopHold() {
+    setHolding(false);
+    setProgress(0);
+    startAtRef.current = null;
+    if (timerRef.current) {
+      window.clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  }
+
+  return (
+    <button
+      onPointerDown={startHold}
+      onPointerUp={stopHold}
+      onPointerCancel={stopHold}
+      onPointerLeave={stopHold}
+      className="relative rounded-2xl bg-white p-4 text-center shadow-sm ring-1 ring-slate-200 active:scale-[0.99]"
+      aria-label="보호자 설정(2초간 길게 누르기)"
+    >
+      <div className="font-bold">보호자</div>
+      <div className="text-xs text-slate-600">2초 꾹 누르기</div>
+      {holding && (
+        <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-slate-200">
+          <div className="h-2 bg-amber-400" style={{ width: `${progress}%` }} />
+        </div>
+      )}
+    </button>
   );
 }
