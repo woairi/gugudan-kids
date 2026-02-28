@@ -46,11 +46,14 @@ export default function CollectionPage() {
                   )}
                   <div className={"text-2xl " + (unlocked ? "" : "opacity-40")}>{b.emoji}</div>
                   <div className="text-xs">
-                    {unlocked ? "획득!" : "🔒 아직 못 받았어"}
+                    {unlocked ? "✨ 받았어!" : "🔒 아직 못 받았어"}
                   </div>
                 </div>
                 <div className="mt-2 text-lg font-extrabold">{b.title}</div>
                 <div className="mt-1 text-sm">{b.desc}</div>
+                {unlocked && (
+                  <div className="mt-2 text-xs text-emerald-700">반짝! 스티커가 생겼어 ✨</div>
+                )}
               </div>
             );
           })}
