@@ -1,11 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { lsGet, lsSet } from "@/shared/lib/storage";
 import { isLastResultArray } from "@/shared/lib/validators";
-import { getQueryInt } from "@/shared/lib/query";
 import { ENCOURAGES, PRAISES, pickRandom } from "@/shared/lib/phrases";
 import { bumpItemStat, getItemStats, type ItemKey } from "@/shared/lib/stats";
 import { unlockBadge, type BadgeId } from "@/shared/lib/rewards";
@@ -112,12 +111,20 @@ function makeSession(dan: number, total = 10): Question[] {
 
 export default function QuizPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [mode, setMode] = useState<Mode>("dan");
-  const [selectedDan, setSelectedDan] = useState<number | null>(() => {
-    const q = getQueryInt("dan");
-    return q != null && q >= 0 && q <= 9 ? q : null;
-  });
+  const [selectedDan, setSelectedDan] = useState<number | null>(null);
+
+  useEffect(() => {
+    // ensure query param dan is applied after hydration
+    const q = searchParams.get("dan");
+    const n = q != null ? Number(q) : NaN;
+    if (Number.isFinite(n) && n >= 0 && n <= 9) {
+      setSelectedDan(n);
+    }
+  }, [searchParams]);
+
   const [startedAt, setStartedAt] = useState<number | null>(null);
   const [questions, setQuestions] = useState<Question[] | null>(null);
   const [index, setIndex] = useState(0);
