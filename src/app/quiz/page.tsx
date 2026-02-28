@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { lsGet, lsSet } from "@/shared/lib/storage";
 import { getQueryInt } from "@/shared/lib/query";
 import { ENCOURAGES, PRAISES, pickRandom } from "@/shared/lib/phrases";
+import { bumpItemStat, getItemStats, type ItemKey } from "@/shared/lib/stats";
 
 type Question = {
   dan: number;
@@ -13,6 +14,8 @@ type Question = {
   answer: number;
   choices: number[];
 };
+
+type Mode = "dan" | "weak";
 
 type LastResult = {
   at: string;
@@ -51,6 +54,47 @@ function makeChoices(correct: number): number[] {
   return shuffle(Array.from(set));
 }
 
+
+function makeWeakSession(dan: number, total = 10): Question[] {
+  const stats = getItemStats();
+  // build candidates for this dan (0~9)
+  const candidates = Array.from({ length: 10 }, (_, right) => {
+    const key = `${dan}x${right}` as ItemKey;
+    const s = stats[key];
+    const wrong = s?.wrong ?? 0;
+    const attempts = s?.attempts ?? 0;
+    const score = attempts == 0 ? -1 : wrong / attempts; // -1 means unknown
+    return { right, score, wrong, attempts };
+  });
+
+  // sort: known weakness first (higher wrong-rate), then more wrong count
+  candidates.sort((a, b) => {
+    if (a.score === -1 && b.score !== -1) return 1;
+    if (b.score === -1 && a.score !== -1) return -1;
+    if (b.score !== a.score) return b.score - a.score;
+    return b.wrong - a.wrong;
+  });
+
+  const pickedRights: number[] = [];
+  for (const c of candidates) {
+    if (pickedRights.length >= total) break;
+    if (c.score === -1) break; // stop when unknowns start
+    pickedRights.push(c.right);
+  }
+
+  // if not enough known-weak items, fill with random unique rights
+  const pool = shuffle(Array.from({ length: 10 }, (_, i) => i));
+  for (const r of pool) {
+    if (pickedRights.length >= total) break;
+    if (!pickedRights.includes(r)) pickedRights.push(r);
+  }
+
+  return pickedRights.map((right) => {
+    const answer = dan * right;
+    return { dan, right, answer, choices: makeChoices(answer) };
+  });
+}
+
 function makeSession(dan: number, total = 10): Question[] {
   // right 0~9를 섞어서 앞에서 total개 사용 (중복 없음)
   const rights = shuffle(Array.from({ length: 10 }, (_, i) => i)).slice(0, total);
@@ -63,6 +107,7 @@ function makeSession(dan: number, total = 10): Question[] {
 export default function QuizPage() {
   const router = useRouter();
 
+  const [mode, setMode] = useState<Mode>("dan");
   const [selectedDan, setSelectedDan] = useState<number | null>(() => {
     const q = getQueryInt("dan");
     return q != null && q >= 0 && q <= 9 ? q : null;
@@ -84,7 +129,7 @@ export default function QuizPage() {
 
   function start() {
     if (selectedDan == null) return;
-    setQuestions(makeSession(selectedDan, 10));
+    setQuestions(mode === "weak" ? makeWeakSession(selectedDan, 10) : makeSession(selectedDan, 10));
     setIndex(0);
     setCorrect(0);
     setPicked(null);
@@ -99,6 +144,7 @@ export default function QuizPage() {
     setPicked(value);
     setIsRight(ok);
     if (ok) setCorrect((c) => c + 1);
+    bumpItemStat(`${current.dan}x${current.right}` as ItemKey, ok);
   }
 
   function next() {
@@ -141,6 +187,29 @@ export default function QuizPage() {
         {/* 단 선택 */}
         <section className="mt-6 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
           <div className="text-sm font-bold">어떤 단을 할까?</div>
+          <div className="mt-3 grid grid-cols-2 gap-2">
+            <button
+              onClick={() => setMode("dan")}
+              className={
+                "h-12 rounded-2xl font-extrabold ring-1 active:scale-[0.99] " +
+                (mode === "dan" ? "bg-emerald-100 ring-emerald-200" : "bg-white ring-slate-200")
+              }
+            >
+              단 퀴즈
+            </button>
+            <button
+              onClick={() => setMode("weak")}
+              className={
+                "h-12 rounded-2xl font-extrabold ring-1 active:scale-[0.99] " +
+                (mode === "weak" ? "bg-amber-200 ring-amber-300" : "bg-white ring-slate-200")
+              }
+            >
+              약한 문제
+            </button>
+          </div>
+          <div className="mt-2 text-sm text-slate-600">
+            {mode === "weak" ? "틀린 적이 많은 문제부터 나와요." : "선택한 단에서 랜덤으로 나와요."}
+          </div>
           <div className="mt-3 grid grid-cols-5 gap-2">
             {Array.from({ length: 10 }, (_, i) => i).map((dan) => {
               const active = selectedDan === dan;
