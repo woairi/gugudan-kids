@@ -7,6 +7,8 @@ import { isLastResultArray } from "@/shared/lib/validators";
 import { ENCOURAGES, PRAISES, pickRandom } from "@/shared/lib/phrases";
 import { bumpItemStat, getItemStats, type ItemKey } from "@/shared/lib/stats";
 import { unlockBadge, type BadgeId } from "@/shared/lib/rewards";
+import { getSettings } from "@/shared/lib/settings";
+import { playCorrect, playWrong } from "@/shared/lib/sound";
 
 type Question = {
   dan: number;
@@ -156,7 +158,8 @@ export default function QuizPage() {
 
   function start() {
     if (selectedDan == null) return;
-    setQuestions(mode === "weak" ? makeWeakSession(selectedDan, 10) : makeSession(selectedDan, 10));
+    const { quizCount } = getSettings();
+    setQuestions(mode === "weak" ? makeWeakSession(selectedDan, quizCount) : makeSession(selectedDan, quizCount));
     setIndex(0);
     setCorrect(0);
     setWrongItems([]);
@@ -171,6 +174,7 @@ export default function QuizPage() {
     if (!current) return;
     if (picked != null) return; // 중복 채점 방지
     const ok = value === current.answer;
+    if (ok) playCorrect(); else playWrong();
     setPicked(value);
     setIsRight(ok);
     if (ok) setCorrect((c) => c + 1);
