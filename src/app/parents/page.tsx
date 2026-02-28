@@ -13,14 +13,15 @@ const RESET_KEYS = [
 ];
 
 export default function ParentsPage() {
+  function showToast() {
+    setToast("저장됐어!");
+    window.setTimeout(() => setToast(null), 1200);
+  }
   const [settings, setLocalSettings] = useState<Settings>(() => getSettings());
   const [toast, setToast] = useState<string | null>(null);
 
   useEffect(() => {
     setSettings(settings);
-    setToast("저장됐어!");
-    const t = window.setTimeout(() => setToast(null), 1200);
-    return () => window.clearTimeout(t);
   }, [settings]);
 
   function resetAll() {
@@ -52,7 +53,7 @@ export default function ParentsPage() {
           <div className="mt-4 flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-4 ring-1 ring-slate-200">
             <div className="text-sm font-bold">사운드 켜기</div>
             <button
-              onClick={() => setLocalSettings((s) => ({ ...s, soundOn: !s.soundOn }))}
+              onClick={() => { setLocalSettings((s) => ({ ...s, soundOn: !s.soundOn })); showToast(); }}
               className={
                 "h-12 w-24 rounded-full text-sm font-extrabold ring-1 active:scale-[0.99] " +
                 (settings.soundOn
@@ -75,7 +76,7 @@ export default function ParentsPage() {
               return (
                 <button
                   key={n}
-                  onClick={() => setLocalSettings((s) => ({ ...s, quizCount: n as 10 | 20 }))}
+                  onClick={() => { setLocalSettings((s) => ({ ...s, quizCount: n as 10 | 20 })); showToast(); }}
                   className={
                     "h-14 rounded-2xl text-lg font-extrabold ring-1 active:scale-[0.99] " +
                     (active
