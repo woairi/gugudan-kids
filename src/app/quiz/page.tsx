@@ -327,7 +327,7 @@ export default function QuizPage() {
                 } else if (chosen && isRight) {
                   cls += "bg-emerald-500 text-white ring-emerald-600";
                 } else if (chosen && !isRight) {
-                  cls += "bg-rose-500 text-white ring-rose-600";
+                  cls += "bg-amber-400 text-slate-900 ring-amber-500";
                 } else if (correctChoice) {
                   cls += "bg-emerald-200 ring-emerald-300";
                 } else {
