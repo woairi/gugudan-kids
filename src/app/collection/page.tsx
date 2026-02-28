@@ -41,9 +41,9 @@ export default function CollectionPage() {
                 }
               >
                 <div className="flex items-center justify-between">
-                  <div className="text-2xl">{b.emoji}</div>
+                  <div className={"text-2xl " + (unlocked ? "" : "opacity-40")}>{b.emoji}</div>
                   <div className="text-xs">
-                    {unlocked ? "획득!" : "잠김"}
+                    {unlocked ? "획득!" : "🔒 아직 못 받았어"}
                   </div>
                 </div>
                 <div className="mt-2 text-lg font-extrabold">{b.title}</div>
