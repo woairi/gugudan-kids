@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { lsGet, lsSet } from "@/shared/lib/storage";
 import { isLastResultArray } from "@/shared/lib/validators";
 import { ENCOURAGES, PRAISES, pickRandom } from "@/shared/lib/phrases";
@@ -111,19 +111,23 @@ function makeSession(dan: number, total = 10): Question[] {
 
 export default function QuizPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   const [mode, setMode] = useState<Mode>("dan");
   const [selectedDan, setSelectedDan] = useState<number | null>(null);
 
   useEffect(() => {
-    // ensure query param dan is applied after hydration
-    const q = searchParams.get("dan");
-    const n = q != null ? Number(q) : NaN;
-    if (Number.isFinite(n) && n >= 0 && n <= 9) {
-      setSelectedDan(n);
+    // apply query param dan after hydration (no next/navigation hooks)
+    try {
+      const url = new URL(window.location.href);
+      const q = url.searchParams.get("dan");
+      const n = q != null ? Number(q) : NaN;
+      if (Number.isFinite(n) && n >= 0 && n <= 9) {
+        setSelectedDan(n);
+      }
+    } catch {
+      // ignore
     }
-  }, [searchParams]);
+  }, []);
 
   const [startedAt, setStartedAt] = useState<number | null>(null);
   const [questions, setQuestions] = useState<Question[] | null>(null);

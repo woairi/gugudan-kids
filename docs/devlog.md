@@ -81,4 +81,4 @@
 
 ### 2026-02-28 (추가)
 - P0 Fix
-  - `/quiz?dan=7` 진입 시 단이 확실히 자동 선택되도록 쿼리 파라미터 적용 로직 개선(useSearchParams)
+  - `/quiz?dan=7` 진입 시 단이 확실히 자동 선택되도록 쿼리 파라미터 적용 로직 개선(window.location)
