@@ -77,7 +77,7 @@ export default function LearnPage() {
           </div>
 
           <Link
-            href={`/quiz?dan=`}
+            href={`/quiz?dan=${dan}`}
             className="mt-5 block h-14 rounded-2xl bg-emerald-500 text-center text-lg font-extrabold leading-[3.5rem] text-white shadow-sm active:scale-[0.99]"
           >
             이 단으로 퀴즈풀기

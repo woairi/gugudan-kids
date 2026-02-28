@@ -54,3 +54,7 @@
   - 퀴즈 완료 시 스티커(배지) 언락(localStorage: `gugudan.rewards.v1`)
   - 기본 배지: 첫 퀴즈, 만점, 0~9단 마스터
   - `/collection`에서 잠금/획득 상태 표시
+
+### 2026-02-28 (추가)
+- P0 Fix
+  - Learn → Quiz 링크에서 선택한 단(dan) 전달 버그 수정
