@@ -150,7 +150,7 @@ export default function QuizPage() {
   const total = questions?.length ?? 10;
 
   const statusText = useMemo(() => {
-    if (picked == null) return "선택하면 바로 채점해줄게!";
+    if (picked == null) return "콕 누르면 바로 알려줄게!";
     return isRight ? pickRandom(PRAISES) : pickRandom(ENCOURAGES);
   }, [picked, isRight]);
 
