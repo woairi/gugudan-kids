@@ -150,6 +150,12 @@ export default function QuizPage() {
     setIsRight(ok);
     if (ok) setCorrect((c) => c + 1);
     bumpItemStat(`${current.dan}x${current.right}` as ItemKey, ok);
+    if (!ok) {
+      setWrongItems((w) => [
+        ...w,
+        { dan: current.dan, right: current.right, answer: current.answer, picked: value },
+      ]);
+    }
   }
 
   function next() {
@@ -165,6 +171,7 @@ export default function QuizPage() {
         correct,
         msTotal,
         perQuestionMsAvg: questions.length ? Math.round(msTotal / questions.length) : 0,
+        wrongItems,
       };
       lsSet(LAST_RESULT_KEY, result);
       const prev = lsGet<LastResult[]>(RECENT_RESULTS_KEY) ?? [];
