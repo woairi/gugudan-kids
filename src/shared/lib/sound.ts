@@ -2,7 +2,9 @@ import { getSettings } from "./settings";
 
 function beep(freq: number, durationMs: number) {
   try {
-    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const Ctx = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+    if (!Ctx) return;
+    const ctx = new Ctx();
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = "sine";
