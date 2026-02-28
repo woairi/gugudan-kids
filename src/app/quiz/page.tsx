@@ -137,7 +137,6 @@ export default function QuizPage() {
 
   const [startedAt, setStartedAt] = useState<number | null>(null);
   const [questions, setQuestions] = useState<Question[] | null>(null);
-  const [rights, setRights] = useState<number[] | null>(null);
   const [index, setIndex] = useState(0);
   const [correct, setCorrect] = useState(0);
   const [wrongItems, setWrongItems] = useState<WrongItem[]>([]);
@@ -164,16 +163,15 @@ export default function QuizPage() {
   const statusText = useMemo(() => {
     if (picked == null) return "콕 누르면 바로 알려줄게!";
     return isRight ? pickRandom(PRAISES) : pickRandom(ENCOURAGES);
-  const activeSession = getActiveSession();
-
   }, [picked, isRight]);
+
+  const activeSession = getActiveSession();
 
   function start() {
     if (selectedDan == null) return;
     const { quizCount } = getSettings();
     const qs = mode === "weak" ? makeWeakSession(selectedDan, quizCount) : makeSession(selectedDan, quizCount);
     setQuestions(qs);
-    setRights(qs.map((q) => q.right));
     const now = Date.now();
     const sid = `${now}-${Math.random().toString(16).slice(2)}`;
     const session: QuizSession = {
@@ -303,7 +301,6 @@ export default function QuizPage() {
                   setSelectedDan(activeSession.dan);
                   const qs = makeSessionFromRights(activeSession.dan, activeSession.rights);
                   setQuestions(qs);
-                  setRights(activeSession.rights);
                   setIndex(activeSession.index);
                   setCorrect(activeSession.correct);
                   setWrongItems(activeSession.wrongItems);
