@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { getActiveSession } from "@/shared/lib/session";
 
 export default function HomePage() {
   return (
@@ -13,6 +14,16 @@ export default function HomePage() {
             0단부터 9단까지, 귀엽게 배우고 퀴즈로 연습해요.
           </p>
         </header>
+
+        {getActiveSession() && (
+          <a
+            href="/quiz"
+            className="mb-3 block rounded-2xl bg-amber-200 p-5 shadow-sm ring-1 ring-amber-300 active:scale-[0.99]"
+          >
+            <div className="text-lg font-extrabold">이어서 하기</div>
+            <div className="mt-1 text-sm text-slate-700">하던 퀴즈를 이어서 할 수 있어!</div>
+          </a>
+        )}
 
         <div className="grid gap-3">
           <Link
