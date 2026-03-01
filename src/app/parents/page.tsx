@@ -5,12 +5,12 @@ import { useEffect, useState } from "react";
 import { getSettings, setSettings, type Settings } from "@/shared/lib/settings";
 
 const RESET_KEYS = [
-  "gugudan.lastResult.v1",
-  "gugudan.recentResults.v1",
-  "gugudan.itemStats.v1",
-  "gugudan.rewards.v1",
-  "gugudan.settings.v1",
-  "gugudan.activeSession.v1",
+  KEYS.LAST_RESULT,
+  KEYS.RECENT_RESULTS,
+  KEYS.ITEM_STATS,
+  KEYS.REWARDS,
+  KEYS.SETTINGS,
+  KEYS.ACTIVE_SESSION,
 ];
 
 export default function ParentsPage() {

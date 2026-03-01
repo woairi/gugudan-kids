@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { lsGet, lsSet } from "@/shared/lib/storage";
 import { isLastResultArray } from "@/shared/lib/validators";
+import type { LastResult, WrongItem } from "@/shared/lib/result-types";
+import { KEYS } from "@/shared/lib/keys";
 import { ENCOURAGES, PRAISES, pickRandom } from "@/shared/lib/phrases";
 import { bumpItemStat, getItemStats, type ItemKey } from "@/shared/lib/stats";
 import { pickWeakRights } from "@/shared/lib/weak";
@@ -22,21 +24,6 @@ type Question = {
 
 type Mode = "dan" | "weak";
 
-type WrongItem = { dan: number; right: number; answer: number; picked: number };
-
-type LastResult = {
-  id: string;
-  at: string;
-  dan: number;
-  total: number;
-  correct: number;
-  msTotal: number;
-  perQuestionMsAvg: number;
-  wrongItems: WrongItem[];
-};
-
-const LAST_RESULT_KEY = "gugudan.lastResult.v1";
-const RECENT_RESULTS_KEY = "gugudan.recentResults.v1";
 const RECENT_LIMIT = 10;
 
 function randInt(min: number, max: number) {
@@ -241,7 +228,7 @@ export default function QuizPage() {
         perQuestionMsAvg: questions.length ? Math.round(msTotal / questions.length) : 0,
         wrongItems,
       };
-      lsSet(LAST_RESULT_KEY, result);
+      lsSet(KEYS.LAST_RESULT, result);
       // rewards
       const atIso = result.at;
       unlockBadge("first-quiz", atIso);
@@ -249,10 +236,10 @@ export default function QuizPage() {
       unlockBadge(danBadge, atIso);
       if (result.correct === result.total) unlockBadge("perfect-10", atIso);
 
-      const prev = lsGet<LastResult[]>(RECENT_RESULTS_KEY, isLastResultArray) ?? [];
+      const prev = lsGet<LastResult[]>(KEYS.RECENT_RESULTS, isLastResultArray) ?? [];
       const deduped = prev.filter((r) => r.id !== result.id);
       const next = [result, ...deduped].slice(0, RECENT_LIMIT);
-      lsSet(RECENT_RESULTS_KEY, next);
+      lsSet(KEYS.RECENT_RESULTS, next);
       bumpToday(result.total, result.correct);
       clearActiveSession();
       setSessionId(null);

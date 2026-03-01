@@ -3,27 +3,14 @@
 import Link from "next/link";
 import { useState } from "react";
 import { lsGet } from "@/shared/lib/storage";
+import type { LastResult } from "@/shared/lib/result-types";
 import { isLastResult, isLastResultArray } from "@/shared/lib/validators";
 
-type WrongItem = { dan: number; right: number; answer: number; picked: number };
-
-type LastResult = {
-  id: string;
-  at: string;
-  dan: number;
-  total: number;
-  correct: number;
-  msTotal: number;
-  perQuestionMsAvg: number;
-  wrongItems: WrongItem[];
-};
-
-const LAST_RESULT_KEY = "gugudan.lastResult.v1";
-const RECENT_RESULTS_KEY = "gugudan.recentResults.v1";
+import { KEYS } from "@/shared/lib/keys";
 
 export default function ResultPage() {
-  const [result] = useState<LastResult | null>(() => lsGet<LastResult>(LAST_RESULT_KEY, isLastResult));
-  const [recent] = useState<LastResult[]>(() => lsGet<LastResult[]>(RECENT_RESULTS_KEY, isLastResultArray) ?? []);
+  const [result] = useState<LastResult | null>(() => lsGet<LastResult>(KEYS.LAST_RESULT, isLastResult));
+  const [recent] = useState<LastResult[]>(() => lsGet<LastResult[]>(KEYS.RECENT_RESULTS, isLastResultArray) ?? []);
 
   const total = result?.total ?? 10;
   const correct = result?.correct ?? 0;

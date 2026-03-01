@@ -222,3 +222,8 @@
 ### 2026-03-01
 - P2
   - README 정리(기능/개발/배포/localStorage 키 목록)
+
+### 2026-03-01
+- P2
+  - localStorage 키 상수 통합(KEYS)
+  - 결과 타입(LastResult/WrongItem) 통합(shared)

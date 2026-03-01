@@ -1,3 +1,4 @@
+import type { LastResult } from "./result-types";
 import type { RewardState } from "./rewards";
 import type { ItemStats } from "./stats";
 
@@ -24,16 +25,6 @@ export function isItemStats(value: unknown): value is ItemStats {
   return true;
 }
 
-export type LastResult = {
-  id: string;
-  at: string;
-  dan: number;
-  total: number;
-  correct: number;
-  msTotal: number;
-  perQuestionMsAvg: number;
-  wrongItems: Array<{ dan: number; right: number; answer: number; picked: number }>;
-};
 
 export function isLastResult(value: unknown): value is LastResult {
   if (!isRecord(value)) return false;

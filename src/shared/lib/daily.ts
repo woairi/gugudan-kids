@@ -1,3 +1,4 @@
+import { KEYS } from "./keys";
 import { lsGet, lsSet } from "./storage";
 import { isRecord } from "./validators";
 
@@ -8,7 +9,7 @@ export type DailyStat = {
 
 export type DailyStats = Record<string, DailyStat>; // YYYY-MM-DD
 
-export const DAILY_KEY = "gugudan.daily.v1";
+export const DAILY_KEY = KEYS.DAILY;
 
 function isDailyStat(v: unknown): v is DailyStat {
   if (!isRecord(v)) return false;

@@ -1,3 +1,4 @@
+import { KEYS } from "./keys";
 import { lsGet, lsSet } from "./storage";
 import { isRecord } from "./validators";
 
@@ -7,7 +8,7 @@ export type Settings = {
   maxRight: 9 | 12;
 };
 
-export const SETTINGS_KEY = "gugudan.settings.v1";
+export const SETTINGS_KEY = KEYS.SETTINGS;
 
 function isSettings(value: unknown): value is Settings {
   if (!isRecord(value)) return false;

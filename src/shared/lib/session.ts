@@ -1,3 +1,4 @@
+import { KEYS } from "./keys";
 import { lsGet, lsSet } from "./storage";
 import { isRecord } from "./validators";
 
@@ -14,7 +15,7 @@ export type QuizSession = {
   startedAt: number;
 };
 
-export const SESSION_KEY = "gugudan.activeSession.v1";
+export const SESSION_KEY = KEYS.ACTIVE_SESSION;
 export const SESSION_MAX_AGE_MS = 24 * 60 * 60 * 1000;
 
 function isNumberArray(v: unknown): v is number[] {

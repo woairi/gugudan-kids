@@ -1,3 +1,4 @@
+import { KEYS } from "./keys";
 import { lsGet, lsSet } from "./storage";
 import { isItemStats } from "./validators";
 
@@ -10,7 +11,7 @@ export type ItemStat = {
 
 export type ItemStats = Record<ItemKey, ItemStat>;
 
-export const ITEM_STATS_KEY = "gugudan.itemStats.v1";
+export const ITEM_STATS_KEY = KEYS.ITEM_STATS;
 
 export function getItemStats(): ItemStats {
   return lsGet<ItemStats>(ITEM_STATS_KEY, isItemStats) ?? {};

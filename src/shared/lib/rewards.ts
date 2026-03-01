@@ -1,3 +1,4 @@
+import { KEYS } from "./keys";
 import { lsGet, lsSet } from "./storage";
 import { isRewardState } from "./validators";
 
@@ -41,7 +42,7 @@ export type RewardState = {
   unlocked: Partial<Record<BadgeId, string>>; // ISO timestamp
 };
 
-export const REWARDS_KEY = "gugudan.rewards.v1";
+export const REWARDS_KEY = KEYS.REWARDS;
 
 export function getRewards(): RewardState {
   return lsGet<RewardState>(REWARDS_KEY, isRewardState) ?? { unlocked: {} };
