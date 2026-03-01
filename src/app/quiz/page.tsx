@@ -166,6 +166,18 @@ export default function QuizPage() {
   const statusText = message;
 
   const activeSession = getActiveSession();
+
+  const weakHasData = (() => {
+    if (mode !== "weak" || selectedDan == null) return true;
+    const stats = getItemStats();
+    for (let r = 0; r <= getSettings().maxRight; r++) {
+      const key = `${selectedDan}x${r}` as ItemKey;
+      const s = stats[key];
+      if (s && (s.attempts ?? 0) > 0) return true;
+    }
+    return false;
+  })();
+
   useEffect(() => {
     if (!questions || sessionId == null || selectedDan == null) return;
     const session: QuizSession = {
@@ -363,7 +375,12 @@ export default function QuizPage() {
             </button>
           </div>
           <div className="mt-2 text-sm text-slate-600">
-            {mode === "weak" ? "틀린 적이 많은 문제부터 나와요." : "준비되면 시작! (처음엔 천천히 해도 돼)"}
+            {mode === "weak" ? "틀린 적이 많은 문제부터 나와요." : "준비되면 시작! (처음엔 천천히 해도 돼)
+            {mode === "weak" && !weakHasData && "
+"}
+            {mode === "weak" && !weakHasData && (
+              <div className="mt-2 text-xs text-slate-600">아직 기록이 없어서, 랜덤으로 연습해도 좋아!</div>
+            )}"}
           </div>
           <div className="mt-3 grid grid-cols-5 gap-2">
             {Array.from({ length: 10 }, (_, i) => i).map((dan) => {
