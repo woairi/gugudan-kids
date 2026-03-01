@@ -331,8 +331,8 @@ export default function QuizPage() {
           ← 홈
         </button>
 
-        <h1 className="mt-4 text-2xl font-extrabold">퀴즈풀기</h1>
-        <p className="mt-2 text-slate-700">단을 고르고, 준비되면 시작 버튼을 눌러줘!</p>
+        <h1 className="mt-4 text-2xl font-extrabold">{mode === "mistakes" ? "틀린 문제 다시 풀기" : "퀴즈풀기"}</h1>
+        <p className="mt-2 text-slate-700">{mode === "mistakes" ? "틀렸던 문제만 다시 풀어보자!" : "단을 고르고, 준비되면 시작 버튼을 눌러줘!"}</p>
 
         {activeSession && !questions && (
           <section className="mt-6 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
@@ -416,7 +416,7 @@ export default function QuizPage() {
               return (
                 <button
                   key={dan}
-                  onClick={() => setSelectedDan(dan)}
+                  onClick={() => { if (mode !== "mistakes") setSelectedDan(dan); }}
                   className={
                     "h-12 rounded-2xl font-extrabold ring-1 active:scale-[0.99] " +
                     (active
