@@ -19,12 +19,12 @@ export default function LearnPage() {
   const rows = useMemo(() => makeTable(dan), [dan]);
 
   const tip = useMemo(() => {
-    if (dan === 0) return "0단은 언제나 0이에요!";
-    if (dan === 1) return "1단은 그대로예요!";
-    if (dan === 2) return "2단은 짝수만 나와요.";
-    if (dan === 5) return "5단은 0이나 5로 끝나요.";
-    if (dan === 9) return "9단은 앞자리는 커지고, 뒷자리는 작아져요.";
-    return "천천히 읽어보고 따라 말해봐요.";
+    if (dan === 0) return "0단은 언제나 0! 뭐를 곱해도 0이야.";
+    if (dan === 1) return "1단은 그대로! 1을 곱하면 숫자가 안 바뀌어.";
+    if (dan === 2) return "2단은 짝수만 나와! (0,2,4,6,8)";
+    if (dan === 5) return "5단은 0이나 5로 끝나!";
+    if (dan === 9) return "9단은 앞자리는 커지고, 뒷자리는 작아져!";
+    return "천천히 소리 내서 읽어보자.";
   }, [dan]);
 
   return (
@@ -59,7 +59,7 @@ export default function LearnPage() {
           </div>
 
           <div className="mt-4 rounded-2xl bg-amber-100 p-4 ring-1 ring-amber-200">
-            <div className="text-sm font-extrabold">오늘의 팁</div>
+            <div className="text-sm font-extrabold">오늘의 힌트</div>
             <div className="mt-1 text-sm text-slate-800">{tip}</div>
           </div>
         </section>
