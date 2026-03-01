@@ -234,6 +234,10 @@ export default function QuizPage() {
       unlockBadge("first-quiz", atIso);
       const danBadge = (`dan-${result.dan}`) as BadgeId;
       unlockBadge(danBadge, atIso);
+      // all-clear: if all dan badges are unlocked
+      const state = getRewards();
+      const all = Array.from({ length: 10 }, (_, i) => `dan-${i}` as BadgeId).every((id) => Boolean(state.unlocked[id]));
+      if (all) unlockBadge("all-clear", atIso);
       if (result.correct === result.total) unlockBadge("perfect-10", atIso);
 
       const prev = lsGet<LastResult[]>(KEYS.RECENT_RESULTS, isLastResultArray) ?? [];

@@ -14,7 +14,8 @@ export type BadgeId =
   | "dan-6"
   | "dan-7"
   | "dan-8"
-  | "dan-9";
+  | "dan-9"
+  | "all-clear";
 
 export type Badge = {
   id: BadgeId;
@@ -26,6 +27,7 @@ export type Badge = {
 export const BADGES: Badge[] = [
   { id: "first-quiz", title: "첫 퀴즈", desc: "처음으로 퀴즈를 끝냈어요!", emoji: "🎉" },
   { id: "perfect-10", title: "10문제 만점", desc: "10문제를 모두 맞혔어요!", emoji: "🏆" },
+  { id: "all-clear", title: "올클리어!", desc: "0~9단 마스터를 모두 모았어!", emoji: "👑" },
   { id: "dan-0", title: "0단 마스터", desc: "0단 퀴즈를 끝냈어요!", emoji: "🫧" },
   { id: "dan-1", title: "1단 마스터", desc: "1단 퀴즈를 끝냈어요!", emoji: "🌱" },
   { id: "dan-2", title: "2단 마스터", desc: "2단 퀴즈를 끝냈어요!", emoji: "🐣" },
