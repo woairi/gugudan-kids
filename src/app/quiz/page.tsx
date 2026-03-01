@@ -209,6 +209,10 @@ export default function QuizPage() {
 
   function start() {
     if (selectedDan == null) return;
+    if (mode === "weak" && !weakHasData) {
+      setMode("dan");
+    }
+
     const { quizCount, maxRight } = getSettings();
     const qs = mode === "weak" ? makeWeakSession(selectedDan, maxRight, quizCount) : makeSession(selectedDan, maxRight, quizCount);
     setQuestions(qs);
