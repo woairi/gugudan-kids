@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { getSettings, setSettings, type Settings } from "@/shared/lib/settings";
+import { KEYS } from "@/shared/lib/keys";
 
 const RESET_KEYS = [
   KEYS.LAST_RESULT,
