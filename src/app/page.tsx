@@ -26,8 +26,17 @@ export default function HomePage() {
                 <>
                   오늘 <span className="font-extrabold">{t.solved}</span>문제 풀고,
                   <span className="font-extrabold"> {t.correct}</span>개 맞았어! {face}
+                  <span className="ml-2 text-sm text-slate-600">(목표: 10문제)</span>
                 </>
               );
+            })()}
+          </div>
+          <div className="mt-2 text-sm text-slate-600">
+            {(() => {
+              const t = getToday();
+              const rate = t.solved ? Math.round((t.correct / t.solved) * 100) : 0;
+              const stars = rate >= 90 ? "🌟🌟🌟" : rate >= 70 ? "🌟🌟" : rate >= 50 ? "🌟" : "";
+              return stars ? <>오늘 별: <span className="font-extrabold">{stars}</span></> : <>별을 모으려면 조금만 더!</>;
             })()}
           </div>
         </div>
@@ -69,6 +78,14 @@ export default function HomePage() {
               <div className="text-xs text-slate-600">모아보기</div>
             </Link>
             <ParentsGateButton />
+          </div>
+          <div className="mt-2 text-sm text-slate-600">
+            {(() => {
+              const t = getToday();
+              const rate = t.solved ? Math.round((t.correct / t.solved) * 100) : 0;
+              const stars = rate >= 90 ? "🌟🌟🌟" : rate >= 70 ? "🌟🌟" : rate >= 50 ? "🌟" : "";
+              return stars ? <>오늘 별: <span className="font-extrabold">{stars}</span></> : <>별을 모으려면 조금만 더!</>;
+            })()}
           </div>
         </div>
 
