@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { lsGet, lsSet } from "@/shared/lib/storage";
-import { isLastResultArray } from "@/shared/lib/validators";
+import { isLastResult, isLastResultArray } from "@/shared/lib/validators";
 import type { LastResult, WrongItem } from "@/shared/lib/result-types";
 import { KEYS } from "@/shared/lib/keys";
 import { ENCOURAGES, PRAISES, pickRandom } from "@/shared/lib/phrases";
@@ -452,8 +452,7 @@ export default function QuizPage() {
                 <div className="mt-1 text-xs text-slate-600">
                   소리가 안 들리면 무음 모드(벨소리)나 브라우저 설정을 확인해줘.
                 </div>
-                {mode !== "mistakes" && (
-          <div className="mt-3 grid grid-cols-2 gap-2">
+                <div className="mt-3 grid grid-cols-2 gap-2">
                   <button
                     type="button"
                     onClick={() => playCorrect()}
