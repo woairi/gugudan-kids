@@ -9,7 +9,7 @@ import { KEYS } from "@/shared/lib/keys";
 import { ENCOURAGES, PRAISES, pickRandom } from "@/shared/lib/phrases";
 import { bumpItemStat, getItemStats, type ItemKey } from "@/shared/lib/stats";
 import { pickWeakRights } from "@/shared/lib/weak";
-import { unlockBadge, type BadgeId } from "@/shared/lib/rewards";
+import { getRewards, unlockBadge, type BadgeId } from "@/shared/lib/rewards";
 import { getSettings } from "@/shared/lib/settings";
 import { playCorrect, playWrong } from "@/shared/lib/sound";
 import { clearActiveSession, getActiveSession, setActiveSession, type QuizSession } from "@/shared/lib/session";
