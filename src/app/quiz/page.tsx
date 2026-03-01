@@ -13,7 +13,7 @@ import { getRewards, unlockBadge, type BadgeId } from "@/shared/lib/rewards";
 import { getSettings } from "@/shared/lib/settings";
 import { playCorrect, playWrong } from "@/shared/lib/sound";
 import { clearActiveSession, getActiveSession, setActiveSession, type QuizSession } from "@/shared/lib/session";
-import { bumpToday } from "@/shared/lib/daily";
+import { bumpToday, getToday } from "@/shared/lib/daily";
 
 type Question = {
   dan: number;
@@ -302,6 +302,9 @@ export default function QuizPage() {
       const next = [result, ...deduped].slice(0, RECENT_LIMIT);
       lsSet(KEYS.RECENT_RESULTS, next);
       bumpToday(result.total, result.correct);
+      // daily goal badge (one-time)
+      const t = getToday();
+      if (t.solved >= 10) unlockBadge("goal-10", atIso);
       clearActiveSession();
       setSessionId(null);
       router.push("/result");
