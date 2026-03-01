@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getSettings, setSettings, type Settings } from "@/shared/lib/settings";
 import { KEYS } from "@/shared/lib/keys";
 
@@ -130,12 +130,7 @@ export default function ParentsPage() {
           <p className="mt-2 text-sm text-slate-600">
             퀴즈 기록, 약한문제 통계, 스티커, 설정을 모두 지워요.
           </p>
-          <button
-            onClick={resetAll}
-            className="mt-4 h-14 w-full rounded-2xl bg-rose-500 text-lg font-extrabold text-white shadow-sm active:scale-[0.99]"
-          >
-            모두 지우기
-          </button>
+          <ResetHoldButton onConfirm={resetAll} />
         </section>
 
         <section className="mt-6 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
@@ -144,5 +139,67 @@ export default function ParentsPage() {
         </section>
       </div>
     </main>
+  );
+}
+
+
+function ResetHoldButton({ onConfirm }: { onConfirm: () => void }) {
+  const [holding, setHolding] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const timerRef = useRef<number | null>(null);
+  const startAtRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) window.clearInterval(timerRef.current);
+    };
+  }, []);
+
+  function startHold() {
+    if (holding) return;
+    setHolding(true);
+    setProgress(0);
+    startAtRef.current = Date.now();
+    timerRef.current = window.setInterval(() => {
+      const startAt = startAtRef.current ?? Date.now();
+      const elapsed = Date.now() - startAt;
+      const p = Math.min(100, Math.round((elapsed / 2000) * 100));
+      setProgress(p);
+      if (elapsed >= 2000) {
+        window.clearInterval(timerRef.current!);
+        timerRef.current = null;
+        setHolding(false);
+        setProgress(0);
+        onConfirm();
+      }
+    }, 50);
+  }
+
+  function stopHold() {
+    setHolding(false);
+    setProgress(0);
+    startAtRef.current = null;
+    if (timerRef.current) {
+      window.clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  }
+
+  return (
+    <button
+      onPointerDown={startHold}
+      onPointerUp={stopHold}
+      onPointerCancel={stopHold}
+      onPointerLeave={stopHold}
+      className="relative mt-4 h-14 w-full rounded-2xl bg-rose-500 text-lg font-extrabold text-white shadow-sm active:scale-[0.99]"
+      aria-label="모두 지우기(2초간 길게 누르기)"
+    >
+      모두 지우기 (2초 꾹)
+      {holding && (
+        <div className="absolute inset-x-4 bottom-2 h-2 overflow-hidden rounded-full bg-rose-200">
+          <div className="h-2 bg-white/80" style={{ width: `${progress}%` }} />
+        </div>
+      )}
+    </button>
   );
 }
