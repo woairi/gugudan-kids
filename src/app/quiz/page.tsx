@@ -374,6 +374,36 @@ export default function QuizPage() {
           >
             시작!
           </button>
+
+          {(() => {
+            const s = getSettings();
+            if (!s.soundOn) return null;
+            return (
+              <div className="mt-3 rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-200">
+                <div className="text-sm font-extrabold">🔊 소리 확인</div>
+                <div className="mt-1 text-xs text-slate-600">
+                  소리가 안 들리면 무음 모드(벨소리)나 브라우저 설정을 확인해줘.
+                </div>
+                <div className="mt-3 grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => playCorrect()}
+                    className="h-12 rounded-2xl bg-emerald-100 text-sm font-extrabold ring-1 ring-emerald-200 active:scale-[0.99]"
+                  >
+                    정답 소리
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => playWrong()}
+                    className="h-12 rounded-2xl bg-amber-100 text-sm font-extrabold ring-1 ring-amber-200 active:scale-[0.99]"
+                  >
+                    오답 소리
+                  </button>
+                </div>
+              </div>
+            );
+          })()}
+
         </section>
 
         {/* 문제 */}
