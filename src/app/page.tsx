@@ -15,7 +15,7 @@ export default function HomePage() {
             0단부터 9단까지, 귀엽게 배우고 퀴즈로 연습해요.
           </p>
         </header>
-        <div className="mt-4 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+        <div className="mt-4 mb-5 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
           <div className="text-sm font-extrabold">오늘 기록</div>
           <div className="mt-2 text-lg font-extrabold">
             {(() => {
@@ -39,7 +39,7 @@ export default function HomePage() {
               );
             })()}
           </div>
-</div>
+        </div>
 
         {getActiveSession() && (
           <a
@@ -51,7 +51,7 @@ export default function HomePage() {
           </a>
         )}
 
-        <div className="grid gap-3">
+        <div className="grid gap-4">
           <Link
             href="/learn"
             className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 active:scale-[0.99]"
