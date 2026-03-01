@@ -1,21 +1,21 @@
-import type { ItemStats } from "./stats";
-
 export const MIN_ATTEMPTS_FOR_WEAK = 2;
 export const UNSEEN_MIX_COUNT = 2;
+
+type StatLike = { attempts?: number; wrong?: number };
 
 export function pickWeakRights(opts: {
   maxRight: number;
   total: number;
-  stats: ItemStats;
+  stats: Record<string, StatLike>;
   dan: number;
 }): number[] {
   const { maxRight, total, stats, dan } = opts;
 
   const candidates = Array.from({ length: maxRight + 1 }, (_, right) => {
     const key = `${dan}x${right}`;
-    const s = stats[key as keyof ItemStats] as any;
-    const wrong = (s?.wrong as number | undefined) ?? 0;
-    const attempts = (s?.attempts as number | undefined) ?? 0;
+    const s = stats[key];
+    const wrong = s?.wrong ?? 0;
+    const attempts = s?.attempts ?? 0;
     const score = attempts < MIN_ATTEMPTS_FOR_WEAK ? -1 : wrong / attempts;
     return { right, score, wrong, attempts };
   });

@@ -17,6 +17,6 @@ describe("validators", () => {
   });
 
   test("isLastResultArray rejects invalid items", () => {
-    expect(isLastResultArray([{} as any])).toBe(false);
+    expect(isLastResultArray([{} as unknown as never])).toBe(false);
   });
 });
