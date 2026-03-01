@@ -17,30 +17,29 @@ export default function HomePage() {
         </header>
         <div className="mt-4 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
           <div className="text-sm font-extrabold">오늘 기록</div>
-          <div className="mt-2 text-base text-slate-700">
+          <div className="mt-2 text-lg font-extrabold">
             {(() => {
               const t = getToday();
               const rate = t.solved ? Math.round((t.correct / t.solved) * 100) : 0;
               const face = rate >= 90 ? "😄😄😄" : rate >= 70 ? "😄😄" : rate >= 50 ? "😄" : "🙂";
+              const stars = rate >= 90 ? "🌟🌟🌟" : rate >= 70 ? "🌟🌟" : rate >= 50 ? "🌟" : "";
+              const goalDone = t.solved >= 10;
               return (
                 <>
-                  오늘 <span className="font-extrabold">{t.solved}</span>문제 풀고,
-                  <span className="font-extrabold"> {t.correct}</span>개 맞았어! {face}
-                  <span className="ml-2 text-sm text-slate-600">(목표: 10문제)</span>
+                  <div>
+                    {goalDone ? "목표 달성!" : "오늘도 조금만!"} {face} {stars}
+                  </div>
+                  <div className="mt-2 text-sm font-bold text-slate-700">
+                    {goalDone ? "10문제 넘게 풀었어!" : "목표: 10문제"}
+                  </div>
+                  <div className="mt-2 text-xs text-slate-600">
+                    (오늘 {t.solved}문제 / {t.correct}개 정답)
+                  </div>
                 </>
               );
             })()}
           </div>
-          <div className="mt-2 text-sm text-slate-600">
-            {(() => {
-              const t = getToday();
-              const rate = t.solved ? Math.round((t.correct / t.solved) * 100) : 0;
-              const stars = rate >= 90 ? "🌟🌟🌟" : rate >= 70 ? "🌟🌟" : rate >= 50 ? "🌟" : "";
-              return stars ? <>오늘 별: <span className="font-extrabold">{stars}</span></> : <>별을 모으려면 조금만 더!</>;
-            })()}
-          </div>
-        </div>
-
+</div>
 
         {getActiveSession() && (
           <a

@@ -227,3 +227,7 @@
 - P2
   - localStorage 키 상수 통합(KEYS)
   - 결과 타입(LastResult/WrongItem) 통합(shared)
+
+### 2026-03-01
+- P2-4
+  - 홈 "오늘 기록" 카드 문구 단순화 + 목표 달성 축하(별/표정 중심)
