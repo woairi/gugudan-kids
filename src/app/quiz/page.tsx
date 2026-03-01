@@ -63,6 +63,9 @@ function makeChoices(correct: number): number[] {
 }
 
 
+const MIN_ATTEMPTS_FOR_WEAK = 2;
+const UNSEEN_MIX_COUNT = 2;
+
 function makeWeakSession(dan: number, maxRight: number, total = 10): Question[] {
   const stats = getItemStats();
   // build candidates for this dan (0~9)
@@ -71,7 +74,7 @@ function makeWeakSession(dan: number, maxRight: number, total = 10): Question[] 
     const s = stats[key];
     const wrong = s?.wrong ?? 0;
     const attempts = s?.attempts ?? 0;
-    const score = attempts == 0 ? -1 : wrong / attempts; // -1 means unknown
+    const score = attempts < MIN_ATTEMPTS_FOR_WEAK ? -1 : wrong / attempts; // -1 means low-data
     return { right, score, wrong, attempts };
   });
 
@@ -84,13 +87,22 @@ function makeWeakSession(dan: number, maxRight: number, total = 10): Question[] 
   });
 
   const pickedRights: number[] = [];
+
+  // 1) pick known-weak items first
   for (const c of candidates) {
     if (pickedRights.length >= total) break;
-    if (c.score === -1) break; // stop when unknowns start
+    if (c.score === -1) break; // stop when low-data starts
     pickedRights.push(c.right);
   }
 
-  // if not enough known-weak items, fill with random unique rights
+  // 2) mix in a few unseen/low-data items so the kid practices new ones too
+  const unseen = candidates.filter((c) => c.score === -1).map((c) => c.right);
+  for (const r of shuffle(unseen).slice(0, UNSEEN_MIX_COUNT)) {
+    if (pickedRights.length >= total) break;
+    if (!pickedRights.includes(r)) pickedRights.push(r);
+  }
+
+  // 3) fill remaining with random unique rights
   const pool = shuffle(Array.from({ length: maxRight + 1 }, (_, i) => i));
   for (const r of pool) {
     if (pickedRights.length >= total) break;
