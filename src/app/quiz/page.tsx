@@ -22,7 +22,7 @@ type Question = {
   choices: number[];
 };
 
-type Mode = "dan" | "weak";
+type Mode = "dan" | "weak" | "mistakes";
 
 const RECENT_LIMIT = 10;
 
@@ -81,11 +81,34 @@ function makeSession(dan: number, maxRight: number, total = 10): Question[] {
 export default function QuizPage() {
   const router = useRouter();
 
-  const [mode, setMode] = useState<Mode>("dan");
+  const [mode, setMode] = useState<Mode>(() => {
+    if (typeof window === "undefined") return "dan";
+    try {
+      const url = new URL(window.location.href);
+      const m = url.searchParams.get("mode");
+      return m === "mistakes" ? "mistakes" : "dan";
+    } catch {
+      return "dan";
+    }
+  });
   const [selectedDan, setSelectedDan] = useState<number | null>(() => {
     if (typeof window === "undefined") return null;
     try {
       const url = new URL(window.location.href);
+      const m = url.searchParams.get("mode");
+      if (m === "mistakes") {
+        const raw = window.localStorage.getItem(KEYS.LAST_RESULT);
+        if (raw) {
+          try {
+            const obj = JSON.parse(raw) as { dan?: number };
+            const d = Number(obj.dan);
+            if (Number.isFinite(d) && d >= 0 && d <= 9) return d;
+          } catch {
+            // ignore
+          }
+        }
+        return null;
+      }
       const q = url.searchParams.get("dan");
       const n = q != null ? Number(q) : NaN;
       return Number.isFinite(n) && n >= 0 && n <= 9 ? n : null;
@@ -160,6 +183,40 @@ export default function QuizPage() {
     }
 
     const { quizCount, maxRight } = getSettings();
+
+    if (mode === "mistakes") {
+      const last = lsGet<LastResult>(KEYS.LAST_RESULT, isLastResult) ;
+      const rights = Array.from(new Set((last?.wrongItems ?? []).map((w) => w.right)));
+      if (rights.length === 0) {
+        setMode("dan");
+      } else {
+        const qs = makeSessionFromRights(last?.dan ?? selectedDan, rights);
+        setQuestions(qs);
+        const now = Date.now();
+        const sid = `${now}-${Math.random().toString(16).slice(2)}`;
+        setSessionId(sid);
+        setIndex(0);
+        setCorrect(0);
+        setWrongItems([]);
+        setPicked(null);
+        setIsRight(null);
+        setMessage("콕 누르면 바로 알려줄게!");
+        setStartedAt(now);
+        const session: QuizSession = {
+          id: sid,
+          dan: (last?.dan ?? selectedDan) as number,
+          mode,
+          total: qs.length,
+          index: 0,
+          correct: 0,
+          rights: qs.map((q) => q.right),
+          wrongItems: [],
+          startedAt: now,
+        };
+        setActiveSession(session);
+        return;
+      }
+    }
     const qs = mode === "weak" ? makeWeakSession(selectedDan, maxRight, quizCount) : makeSession(selectedDan, maxRight, quizCount);
     setQuestions(qs);
     const now = Date.now();
@@ -320,6 +377,7 @@ export default function QuizPage() {
         {/* 단 선택 */}
         <section className="mt-6 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
           <div className="text-sm font-bold">어떤 단을 할까?</div>
+          {mode !== "mistakes" && (
           <div className="mt-3 grid grid-cols-2 gap-2">
             <button
               onClick={() => setMode("dan")}
@@ -340,6 +398,12 @@ export default function QuizPage() {
               약한 문제
             </button>
           </div>
+          )}
+          {mode === "mistakes" && (
+            <div className="mt-3 rounded-2xl bg-emerald-100 p-4 text-sm font-extrabold text-emerald-900 ring-1 ring-emerald-200">
+              틀린 문제만 다시 풀기 모드야!
+            </div>
+          )}
           <div className="mt-2 text-sm text-slate-600">
             {mode === "weak" ? "틀렸던 문제가 더 자주 나와! 연습하기 딱 좋아." : "선택한 단에서 랜덤으로 나와."}
             {mode === "weak" && !weakHasData && (
@@ -388,7 +452,8 @@ export default function QuizPage() {
                 <div className="mt-1 text-xs text-slate-600">
                   소리가 안 들리면 무음 모드(벨소리)나 브라우저 설정을 확인해줘.
                 </div>
-                <div className="mt-3 grid grid-cols-2 gap-2">
+                {mode !== "mistakes" && (
+          <div className="mt-3 grid grid-cols-2 gap-2">
                   <button
                     type="button"
                     onClick={() => playCorrect()}

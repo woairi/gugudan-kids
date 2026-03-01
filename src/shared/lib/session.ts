@@ -5,7 +5,7 @@ import { isRecord } from "./validators";
 export type QuizSession = {
   id: string;
   dan: number;
-  mode: "dan" | "weak";
+  mode: "dan" | "weak" | "mistakes";
   total: number;
   index: number;
   correct: number;
@@ -28,7 +28,7 @@ export function isQuizSession(value: unknown): value is QuizSession {
   return (
     typeof v.id === "string" &&
     typeof v.dan === "number" &&
-    (v.mode === "dan" || v.mode === "weak") &&
+    (v.mode === "dan" || v.mode === "weak" || v.mode === "mistakes") &&
     typeof v.total === "number" &&
     typeof v.index === "number" &&
     typeof v.correct === "number" &&

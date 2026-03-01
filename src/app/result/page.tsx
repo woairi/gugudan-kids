@@ -57,6 +57,16 @@ export default function ResultPage() {
                 <div className="text-sm text-slate-600">다시 풀어볼 문제가 없어요! 최고!</div>
               )}
             </div>
+
+            {result && (result.wrongItems?.length ?? 0) > 0 && (
+              <Link
+                href={`/quiz?mode=mistakes`}
+                className="mt-3 block h-12 rounded-2xl bg-emerald-200 text-center text-base font-extrabold leading-[3rem] text-slate-900 ring-1 ring-emerald-300 active:scale-[0.99]"
+              >
+                틀린 문제만 다시 풀기
+              </Link>
+            )}
+
             {result && (result.wrongItems?.length ?? 0) > 0 && (
               <Link
                 href={`/quiz?dan=${result.dan}`}
