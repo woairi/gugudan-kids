@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { getActiveSession } from "@/shared/lib/session";
+import { getToday } from "@/shared/lib/daily";
 
 export default function HomePage() {
   return (
@@ -14,6 +15,23 @@ export default function HomePage() {
             0단부터 9단까지, 귀엽게 배우고 퀴즈로 연습해요.
           </p>
         </header>
+        <div className="mt-4 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+          <div className="text-sm font-extrabold">오늘 기록</div>
+          <div className="mt-2 text-base text-slate-700">
+            {(() => {
+              const t = getToday();
+              const rate = t.solved ? Math.round((t.correct / t.solved) * 100) : 0;
+              const face = rate >= 90 ? "😄😄😄" : rate >= 70 ? "😄😄" : rate >= 50 ? "😄" : "🙂";
+              return (
+                <>
+                  오늘 <span className="font-extrabold">{t.solved}</span>문제 풀고,
+                  <span className="font-extrabold"> {t.correct}</span>개 맞았어! {face}
+                </>
+              );
+            })()}
+          </div>
+        </div>
+
 
         {getActiveSession() && (
           <a

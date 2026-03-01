@@ -10,6 +10,7 @@ import { unlockBadge, type BadgeId } from "@/shared/lib/rewards";
 import { getSettings } from "@/shared/lib/settings";
 import { playCorrect, playWrong } from "@/shared/lib/sound";
 import { clearActiveSession, getActiveSession, setActiveSession, type QuizSession } from "@/shared/lib/session";
+import { bumpToday } from "@/shared/lib/daily";
 
 type Question = {
   dan: number;
@@ -265,6 +266,7 @@ export default function QuizPage() {
       const deduped = prev.filter((r) => r.id !== result.id);
       const next = [result, ...deduped].slice(0, RECENT_LIMIT);
       lsSet(RECENT_RESULTS_KEY, next);
+      bumpToday(result.total, result.correct);
       clearActiveSession();
       setSessionId(null);
       router.push("/result");
