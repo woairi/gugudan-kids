@@ -403,6 +403,7 @@ export default function QuizPage() {
               </button>
             </div>
           </section>
+          </>
         )}
 
         {/* 단 선택 */}
@@ -509,14 +510,15 @@ export default function QuizPage() {
 
         {/* 문제 */}
         {current && (
-          <div className="mt-5 mb-3 flex items-start gap-3">
-            <div className="text-3xl">🐥</div>
-            <div className="rounded-2xl bg-white px-4 py-3 text-sm font-bold text-slate-800 shadow-sm ring-1 ring-slate-200">
-              {charLine}
+          <>
+            <div className="mt-5 mb-3 flex items-start gap-3">
+              <div className="text-3xl">🐥</div>
+              <div className="rounded-2xl bg-white px-4 py-3 text-sm font-bold text-slate-800 shadow-sm ring-1 ring-slate-200">
+                {charLine}
+              </div>
             </div>
-          </div>
 
-          <section className="mt-0 rounded-2xl bg-white p-6 text-center shadow-sm ring-1 ring-slate-200">
+            <section className="mt-0 rounded-2xl bg-white p-6 text-center shadow-sm ring-1 ring-slate-200">
             <div className="text-sm text-slate-600">
               {index + 1} / {total}
             </div>
@@ -576,6 +578,7 @@ export default function QuizPage() {
               맞은 개수: <span className="font-extrabold">{correct}</span>
             </div>
           </section>
+          </>
         )}
       </div>
     </main>
