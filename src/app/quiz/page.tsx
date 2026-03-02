@@ -583,14 +583,14 @@ export default function QuizPage() {
               {current.dan} × {current.right} = ?
             </div>
 
-            <div className="mt-6 grid grid-cols-2 gap-3">
+            <div className="mt-6 grid grid-cols-2 gap-4">
               {current.choices.map((v) => {
                 const disabled = picked != null;
                 const chosen = picked === v;
                 const correctChoice = v === current.answer;
 
                 let cls =
-                  "h-16 rounded-2xl text-2xl font-extrabold ring-1 active:scale-[0.99] ";
+                  "h-18 rounded-2xl text-2xl font-extrabold ring-1 active:scale-[0.99] ";
                 if (!disabled) {
                   cls += "bg-emerald-50 ring-emerald-200";
                 } else if (chosen && isRight) {
