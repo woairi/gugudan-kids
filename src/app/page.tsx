@@ -58,20 +58,28 @@ export default function HomePage() {
         )}
 
         <div className="grid gap-4">
-        <div className="grid gap-3">
-          <Link
-            href="/quiz"
-            className="h-16 rounded-3xl bg-emerald-500 text-center text-xl font-extrabold leading-[4rem] text-white shadow-sm active:scale-[0.99]"
-          >
-            바로 퀴즈
-          </Link>
-<div className="mt-4 grid grid-cols-2 gap-3">
+          <div className="grid gap-3">
+            <Link
+              href="/quiz"
+              className="h-16 rounded-3xl bg-emerald-500 text-center text-xl font-extrabold leading-[4rem] text-white shadow-sm active:scale-[0.99]"
+            >
+              바로 퀴즈
+            </Link>
+            <Link
+              href="/learn"
+              className="h-16 rounded-3xl bg-white text-center text-xl font-extrabold leading-[4rem] text-slate-900 shadow-sm ring-1 ring-slate-200 active:scale-[0.99]"
+            >
+              학습 먼저
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
             <Link
               href="/collection"
               className="rounded-2xl bg-white p-4 text-center shadow-sm ring-1 ring-slate-200 active:scale-[0.99]"
             >
-              <div className="font-bold">스티커</div>
-              <div className="text-xs text-slate-600"></div>
+              <div className="text-2xl">⭐</div>
+              <div className="mt-1 font-bold">스티커</div>
             </Link>
             <ParentsGateButton />
           </div>
