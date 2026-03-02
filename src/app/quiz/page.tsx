@@ -129,6 +129,7 @@ export default function QuizPage() {
   const [showSettings, setShowSettings] = useState(true);
   const [isRight, setIsRight] = useState<boolean | null>(null);
   const [message, setMessage] = useState<string>("콕 누르면 바로 알려줄게!");
+  const [charLine, setCharLine] = useState<string>("준비되면 시작! 🐥");
 
   const current = questions?.[index] ?? null;
 
@@ -148,6 +149,13 @@ export default function QuizPage() {
   const statusText = message;
 
   const activeSession = getActiveSession();
+
+
+  function flashChar(line: string) {
+    setCharLine(line);
+    window.setTimeout(() => setCharLine("계속 가볼까? 🐥"), 600);
+  }
+
 
   const weakHasData = (() => {
     if (mode !== "weak" || selectedDan == null) return true;
@@ -202,6 +210,7 @@ export default function QuizPage() {
         setPicked(null);
         setIsRight(null);
         setMessage("콕 누르면 바로 알려줄게!");
+    setCharLine("다음 문제! 🐥");
         setStartedAt(now);
         const session: QuizSession = {
           id: sid,
@@ -241,9 +250,12 @@ export default function QuizPage() {
     setPicked(null);
     setIsRight(null);
     setMessage("콕 누르면 바로 알려줄게!");
+    setCharLine("다음 문제! 🐥");
     setMessage("콕 누르면 바로 알려줄게!");
+    setCharLine("다음 문제! 🐥");
     setStartedAt(Date.now());
     setShowSettings(false);
+    setCharLine("시작! 🐥");
     setIsFinalizing(false);
     finalizedRef.current = false;
   }
@@ -256,6 +268,7 @@ export default function QuizPage() {
     setPicked(value);
     setIsRight(ok);
     setMessage(ok ? pickRandom(PRAISES) : pickRandom(ENCOURAGES));
+    flashChar(ok ? "좋아! 🐥✨" : "괜찮아! 🐥");
     if (ok) setCorrect((c) => c + 1);
     bumpItemStat(`${current.dan}x${current.right}` as ItemKey, ok);
     if (!ok) {
@@ -317,6 +330,7 @@ export default function QuizPage() {
     setPicked(null);
     setIsRight(null);
     setMessage("콕 누르면 바로 알려줄게!");
+    setCharLine("다음 문제! 🐥");
   }
 
   return (
@@ -495,7 +509,14 @@ export default function QuizPage() {
 
         {/* 문제 */}
         {current && (
-          <section className="mt-6 rounded-2xl bg-white p-6 text-center shadow-sm ring-1 ring-slate-200">
+          <div className="mt-5 mb-3 flex items-start gap-3">
+            <div className="text-3xl">🐥</div>
+            <div className="rounded-2xl bg-white px-4 py-3 text-sm font-bold text-slate-800 shadow-sm ring-1 ring-slate-200">
+              {charLine}
+            </div>
+          </div>
+
+          <section className="mt-0 rounded-2xl bg-white p-6 text-center shadow-sm ring-1 ring-slate-200">
             <div className="text-sm text-slate-600">
               {index + 1} / {total}
             </div>
