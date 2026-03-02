@@ -8,8 +8,8 @@ import { getToday } from "@/shared/lib/daily";
 export default function HomePage() {
   return (
     <main className="min-h-dvh bg-amber-50 text-slate-900">
-      <div className="mx-auto max-w-md px-5 py-8">
-        <header className="mb-6">
+      <div className="mx-auto max-w-md px-5 py-6">
+        <header className="mb-4">
           <h1 className="text-3xl font-extrabold tracking-tight">구구단 놀이터</h1>
           <p className="mt-2 text-base text-slate-700">
             0단부터 9단까지, 귀엽게 배우고 퀴즈로 연습해요.
@@ -51,10 +51,9 @@ export default function HomePage() {
         {getActiveSession() && (
           <a
             href="/quiz"
-            className="mb-3 block rounded-2xl bg-amber-200 p-5 shadow-sm ring-1 ring-amber-300 active:scale-[0.99]"
+            className="mb-3 inline-flex items-center gap-2 rounded-full bg-amber-200 px-4 py-2 text-sm font-extrabold text-slate-900 ring-1 ring-amber-300 active:scale-[0.99]"
           >
-            <div className="text-lg font-extrabold">이어서 하기</div>
-            <div className="mt-1 text-sm text-slate-700">하던 퀴즈를 이어서 할 수 있어!</div>
+            ▶︎ 이어서 하기
           </a>
         )}
 
@@ -66,52 +65,19 @@ export default function HomePage() {
           >
             바로 퀴즈
           </Link>
-          <Link
-            href="/learn"
-            className="h-16 rounded-3xl bg-white text-center text-xl font-extrabold leading-[4rem] text-slate-900 shadow-sm ring-1 ring-slate-200 active:scale-[0.99]"
-          >
-            학습 먼저
-          </Link>
-        </div>
-
-        
-          <Link
-            href="/learn"
-            className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 active:scale-[0.99]"
-          >
-            <div className="text-lg font-bold">학습하기</div>
-            <div className="mt-1 text-sm text-slate-600">단별 표를 보고 외워요</div>
-          </Link>
-
-          <Link
-            href="/quiz"
-            className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 active:scale-[0.99]"
-          >
-            <div className="text-lg font-bold">퀴즈풀기</div>
-            <div className="mt-1 text-sm text-slate-600">10문제로 가볍게 연습!</div>
-          </Link>
-
-          <div className="grid grid-cols-2 gap-3">
+<div className="mt-4 grid grid-cols-2 gap-3">
             <Link
               href="/collection"
               className="rounded-2xl bg-white p-4 text-center shadow-sm ring-1 ring-slate-200 active:scale-[0.99]"
             >
               <div className="font-bold">스티커</div>
-              <div className="text-xs text-slate-600">모아보기</div>
+              <div className="text-xs text-slate-600"></div>
             </Link>
             <ParentsGateButton />
           </div>
-          <div className="mt-2 text-sm text-slate-600">
-            {(() => {
-              const t = getToday();
-              const rate = t.solved ? Math.round((t.correct / t.solved) * 100) : 0;
-              const stars = rate >= 90 ? "🌟🌟🌟" : rate >= 70 ? "🌟🌟" : rate >= 50 ? "🌟" : "";
-              return stars ? <>오늘 별: <span className="font-extrabold">{stars}</span></> : <>별을 모으려면 조금만 더!</>;
-            })()}
-          </div>
         </div>
 
-        <footer className="mt-10 text-center text-xs text-slate-500">
+        <footer className="mt-6 text-center text-xs text-slate-500">
           만든이: Bori · 배포: Vercel
         </footer>
       </div>
