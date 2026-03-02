@@ -15,8 +15,15 @@ export default function HomePage() {
             0단부터 9단까지, 귀엽게 배우고 퀴즈로 연습해요.
           </p>
         </header>
+        <div className="mb-4 flex items-start gap-3">
+          <div className="text-3xl">🐥</div>
+          <div className="rounded-2xl bg-white px-4 py-3 text-sm font-bold text-slate-800 shadow-sm ring-1 ring-slate-200">
+            오늘은 10문제 미션! 같이 해보자.
+          </div>
+        </div>
+
         <div className="mt-4 mb-5 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
-          <div className="text-sm font-extrabold">오늘 기록</div>
+          <div className="text-sm font-extrabold">오늘 미션</div>
           <div className="mt-2 text-lg font-extrabold">
             {(() => {
               const t = getToday();
@@ -27,10 +34,10 @@ export default function HomePage() {
               return (
                 <>
                   <div>
-                    {goalDone ? "목표 달성!" : "오늘도 조금만!"} {face} {stars}
+                    {goalDone ? "미션 성공!" : "미션 도전!"} {face} {stars}
                   </div>
                   <div className="mt-2 text-sm font-bold text-slate-700">
-                    {goalDone ? "10문제 넘게 풀었어!" : "목표: 10문제"}
+                    {goalDone ? "10문제 넘게 풀었어!" : "목표: 10문제 풀기"}
                   </div>
                   <div className="mt-2 text-xs text-slate-600">
                     (오늘 {t.solved}문제 / {t.correct}개 정답)
@@ -52,6 +59,22 @@ export default function HomePage() {
         )}
 
         <div className="grid gap-4">
+        <div className="grid gap-3">
+          <Link
+            href="/quiz"
+            className="h-16 rounded-3xl bg-emerald-500 text-center text-xl font-extrabold leading-[4rem] text-white shadow-sm active:scale-[0.99]"
+          >
+            바로 퀴즈
+          </Link>
+          <Link
+            href="/learn"
+            className="h-16 rounded-3xl bg-white text-center text-xl font-extrabold leading-[4rem] text-slate-900 shadow-sm ring-1 ring-slate-200 active:scale-[0.99]"
+          >
+            학습 먼저
+          </Link>
+        </div>
+
+        
           <Link
             href="/learn"
             className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 active:scale-[0.99]"
