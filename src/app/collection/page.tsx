@@ -63,8 +63,14 @@ export default function CollectionPage() {
 
 
         {selected && (
-          <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-4">
-            <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-xl ring-1 ring-slate-200">
+          <div
+            className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-4"
+            onClick={() => setSelected(null)}
+          >
+            <div
+              className="w-full max-w-md rounded-3xl bg-white p-6 shadow-xl ring-1 ring-slate-200"
+              onClick={(e) => e.stopPropagation()}
+            >
               <div className="flex items-start justify-between">
                 <div>
                   <div className="text-4xl">{selected.emoji}</div>
