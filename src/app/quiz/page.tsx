@@ -403,7 +403,6 @@ export default function QuizPage() {
               </button>
             </div>
           </section>
-          </>
         )}
 
         {/* 단 선택 */}
