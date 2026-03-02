@@ -27,36 +27,38 @@ export default function CollectionPage() {
           모은 스티커: <span className="font-extrabold">{unlockedCount}</span> / {list.length}
         </p>
 
-        <div className="mt-6 grid gap-3">
-          {list.map((b) => {
-            const unlocked = Boolean(b.unlockedAt);
-            return (
-              <div
-                key={b.id}
-                className={
-                  "relative rounded-2xl p-5 shadow-sm ring-1 " +
-                  (unlocked
-                    ? "bg-white ring-emerald-200"
-                    : "bg-slate-100 text-slate-500 ring-slate-200 border border-dashed border-slate-300")
-                }
-              >
-                <div className="flex items-center justify-between">
+        <div className="mt-6 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+          <div className="text-sm font-extrabold">스티커북</div>
+          <div className="mt-1 text-xs text-slate-600">빈칸을 채워보자!</div>
+
+          <div className="mt-4 grid grid-cols-3 gap-3">
+            {list.map((b) => {
+              const unlocked = Boolean(b.unlockedAt);
+              return (
+                <div
+                  key={b.id}
+                  className={
+                    "relative aspect-square rounded-3xl p-3 text-center ring-1 " +
+                    (unlocked
+                      ? "bg-amber-50 ring-amber-200"
+                      : "bg-slate-100 text-slate-500 ring-slate-200 border border-dashed border-slate-300")
+                  }
+                >
                   {!unlocked && (
-                    <div className="absolute right-4 top-4 rounded-full bg-white px-2 py-1 text-xs font-extrabold ring-1 ring-slate-200">🔒</div>
+                    <div className="absolute right-2 top-2 rounded-full bg-white px-2 py-1 text-[10px] font-extrabold ring-1 ring-slate-200">
+                      🔒
+                    </div>
                   )}
-                  <div className={"text-2xl " + (unlocked ? "" : "opacity-40")}>{b.emoji}</div>
-                  <div className="text-xs">
-                    {unlocked ? "✨ 받았어!" : "🔒 아직 못 받았어"}
-                  </div>
+                  <div className={"mt-3 text-3xl " + (unlocked ? "" : "opacity-30")}>{b.emoji}</div>
+                  <div className="mt-2 text-xs font-extrabold leading-tight">{b.title}</div>
                 </div>
-                <div className="mt-2 text-lg font-extrabold">{b.title}</div>
-                <div className="mt-1 text-sm">{b.desc}</div>
-                {unlocked && (
-                  <div className="mt-2 text-xs text-emerald-700">반짝! 스티커가 생겼어 ✨</div>
-                )}
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="mt-6 text-center text-xs text-slate-500">
+          모은 스티커: <span className="font-extrabold">{unlockedCount}</span> / {list.length}
         </div>
       </div>
     </main>
