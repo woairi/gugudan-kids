@@ -126,6 +126,7 @@ export default function QuizPage() {
   const [isFinalizing, setIsFinalizing] = useState(false);
   const finalizedRef = useRef(false);
   const [picked, setPicked] = useState<number | null>(null);
+  const [showSettings, setShowSettings] = useState(true);
   const [isRight, setIsRight] = useState<boolean | null>(null);
   const [message, setMessage] = useState<string>("콕 누르면 바로 알려줄게!");
 
@@ -242,6 +243,7 @@ export default function QuizPage() {
     setMessage("콕 누르면 바로 알려줄게!");
     setMessage("콕 누르면 바로 알려줄게!");
     setStartedAt(Date.now());
+    setShowSettings(false);
     setIsFinalizing(false);
     finalizedRef.current = false;
   }
@@ -320,6 +322,7 @@ export default function QuizPage() {
   return (
     <main className="min-h-dvh bg-amber-50 text-slate-900">
       <div className="mx-auto max-w-md px-5 py-8">
+        <div className="flex items-center justify-between">
         <button
           type="button"
           onClick={() => {
@@ -333,6 +336,16 @@ export default function QuizPage() {
         >
           ← 홈
         </button>
+
+        <button
+          type="button"
+          onClick={() => setShowSettings((v) => !v)}
+          className="rounded-full bg-white px-3 py-2 text-sm font-extrabold text-slate-700 ring-1 ring-slate-200 active:scale-[0.99]"
+          aria-label="설정 열기/닫기"
+        >
+          ⚙️
+        </button>
+      </div>
 
         <h1 className="mt-4 text-2xl font-extrabold">{mode === "mistakes" ? "틀린 문제 다시 풀기" : "퀴즈풀기"}</h1>
         <p className="mt-2 text-slate-700">{mode === "mistakes" ? "틀렸던 문제만 다시 풀어보자!" : "단을 고르고, 준비되면 시작 버튼을 눌러줘!"}</p>
@@ -368,6 +381,7 @@ export default function QuizPage() {
                   setPicked(null);
                   setIsRight(null);
                   setStartedAt(null);
+                  setShowSettings(true);
                 }}
                 className="h-14 rounded-2xl bg-white text-lg font-extrabold ring-1 ring-slate-200 active:scale-[0.99]"
               >
@@ -378,6 +392,7 @@ export default function QuizPage() {
         )}
 
         {/* 단 선택 */}
+        {showSettings && (
         <section className="mt-6 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
           <div className="text-sm font-bold">어떤 단을 할까?</div>
           {mode !== "mistakes" && (
@@ -476,6 +491,7 @@ export default function QuizPage() {
           })()}
 
         </section>
+        )}
 
         {/* 문제 */}
         {current && (
