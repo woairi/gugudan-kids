@@ -518,6 +518,28 @@ export default function QuizPage() {
             <div className="text-sm text-slate-600">
               {index + 1} / {total}
             </div>
+
+            {/* progress dots */}
+            <div className="mt-2 flex justify-center gap-1">
+              {(() => {
+                const steps = total <= 10 ? total : 10;
+                const unit = Math.ceil(total / steps);
+                const currentStep = Math.min(steps, Math.ceil((index + 1) / unit));
+                return Array.from({ length: steps }, (_, i) => {
+                  const done = i < currentStep;
+                  return (
+                    <span
+                      key={i}
+                      className={
+                        "inline-block h-2.5 w-2.5 rounded-full " +
+                        (done ? "bg-emerald-500" : "bg-slate-200")
+                      }
+                      aria-hidden
+                    />
+                  );
+                });
+              })()}
+            </div>
             <div className="mt-2 text-4xl font-extrabold">
               {current.dan} × {current.right} = ?
             </div>
