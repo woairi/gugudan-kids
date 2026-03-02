@@ -32,7 +32,7 @@ export default function ParentsPage() {
     try {
       for (const k of RESET_KEYS) window.localStorage.removeItem(k);
       window.alert("지웠어! 다시 처음부터 시작할 수 있어.");
-      setLocalSettings({ soundOn: false, quizCount: 10, maxRight: 9 });
+      setLocalSettings({ soundOn: false, quizCount: 10, maxRight: 9, learnView: "cards" });
       window.location.href = "/";
     } catch {
       window.alert("지우는 중 문제가 생겼어. 다시 한 번 해볼까?");
@@ -119,6 +119,35 @@ export default function ParentsPage() {
                   }
                 >
                   0~{n}
+                </button>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="mt-6 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+          <div className="text-sm font-extrabold">학습 화면 보기</div>
+          <p className="mt-2 text-sm text-slate-600">학습 표를 어떻게 보여줄지 정해요.</p>
+
+          <div className="mt-4 grid grid-cols-2 gap-3">
+            {([
+              { key: "cards", label: "카드형" },
+              { key: "table", label: "표형" },
+            ] as const).map((opt) => {
+              const active = settings.learnView === opt.key;
+              return (
+                <button
+                  key={opt.key}
+                  onClick={() => {
+                    setLocalSettings((s) => ({ ...s, learnView: opt.key }));
+                    showToast();
+                  }}
+                  className={
+                    "h-14 rounded-2xl text-lg font-extrabold ring-1 active:scale-[0.99] " +
+                    (active ? "bg-amber-200 ring-amber-300" : "bg-white ring-slate-200")
+                  }
+                >
+                  {opt.label}
                 </button>
               );
             })}

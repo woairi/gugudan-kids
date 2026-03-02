@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { getSettings } from "@/shared/lib/settings";
 import { useRouter } from "next/navigation";
 
 type Row = { right: number; answer: number };
@@ -17,6 +18,7 @@ export default function LearnPage() {
   const [randomRight, setRandomRight] = useState<number>(0);
 
   const rows = useMemo(() => makeTable(dan), [dan]);
+  const view = getSettings().learnView;
 
   const tip = useMemo(() => {
     if (dan === 0) return "0단은 언제나 0! 뭐를 곱해도 0이야.";
@@ -80,19 +82,33 @@ export default function LearnPage() {
             <div className="mt-1 text-sm text-slate-700">소리 내서 한 번 읽어봐!</div>
           </div>
 
-          <div className="mt-3 grid gap-2">
-            {rows.map((r) => (
-              <div
-                key={r.right}
-                className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3 ring-1 ring-slate-200"
-              >
-                <div className="text-xl font-extrabold">
-                  {dan} × {r.right}
+          {view === "cards" ? (
+            <div className="mt-3 grid gap-2">
+              {rows.map((r) => (
+                <div
+                  key={r.right}
+                  className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3 ring-1 ring-slate-200"
+                >
+                  <div className="text-xl font-extrabold">
+                    {dan} × {r.right}
+                  </div>
+                  <div className="text-2xl font-extrabold">{r.answer}</div>
                 </div>
-                <div className="text-2xl font-extrabold">{r.answer}</div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="mt-3 overflow-hidden rounded-2xl ring-1 ring-slate-200">
+              {rows.map((r) => (
+                <div
+                  key={r.right}
+                  className="grid grid-cols-2 items-center bg-white px-4 py-3 text-lg font-extrabold"
+                >
+                  <div className="text-slate-900">{dan} × {r.right}</div>
+                  <div className="text-right text-slate-900">{r.answer}</div>
+                </div>
+              ))}
+            </div>
+          )}
 
           <Link
             href={`/quiz?dan=${dan}`}
