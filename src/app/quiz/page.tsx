@@ -130,6 +130,7 @@ export default function QuizPage() {
   const [isRight, setIsRight] = useState<boolean | null>(null);
   const [message, setMessage] = useState<string>("콕 누르면 바로 알려줄게!");
   const [charLine, setCharLine] = useState<string>("준비되면 시작! 🐥");
+  const [endScreen, setEndScreen] = useState<{ title: string; subtitle: string } | null>(null);
 
   const current = questions?.[index] ?? null;
 
@@ -253,6 +254,7 @@ export default function QuizPage() {
     setCharLine("시작! 🐥");
     setStartedAt(Date.now());
     setShowSettings(false);
+    setEndScreen(null);
     setIsFinalizing(false);
     finalizedRef.current = false;
   }
@@ -297,7 +299,9 @@ export default function QuizPage() {
         perQuestionMsAvg: questions.length ? Math.round(msTotal / questions.length) : 0,
         wrongItems,
       };
-      lsSet(KEYS.LAST_RESULT, result);
+      if (mode !== "mistakes") {
+        lsSet(KEYS.LAST_RESULT, result);
+      }
       // rewards
       const atIso = result.at;
       unlockBadge("first-quiz", atIso);
@@ -319,6 +323,10 @@ export default function QuizPage() {
       if (t.solved >= 10) unlockBadge("goal-10", atIso);
       clearActiveSession();
       setSessionId(null);
+      if (mode === "mistakes") {
+        setEndScreen({ title: "끝! 🐥", subtitle: "틀린 문제 다시 풀기 미션 완료!" });
+        return;
+      }
       router.push("/result");
       return;
     }
@@ -402,8 +410,39 @@ export default function QuizPage() {
           </section>
         )}
 
+        {endScreen && (
+          <section className="mt-6 rounded-3xl bg-white p-6 text-center shadow-sm ring-1 ring-slate-200">
+            <div className="text-3xl font-extrabold">{endScreen.title}</div>
+            <div className="mt-2 text-slate-700">{endScreen.subtitle}</div>
+
+            <div className="mt-6 grid gap-3">
+              <a
+                href="/quiz"
+                className="h-14 rounded-2xl bg-emerald-500 text-center text-lg font-extrabold leading-[3.5rem] text-white shadow-sm active:scale-[0.99]"
+              >
+                랜덤 퀴즈 더 하기
+              </a>
+              <a
+                href="/quiz"
+                onClick={(e) => {
+                  // keep it simple: let user choose weak mode from settings
+                }}
+                className="h-14 rounded-2xl bg-amber-200 text-center text-lg font-extrabold leading-[3.5rem] text-slate-900 ring-1 ring-amber-300 active:scale-[0.99]"
+              >
+                약한 문제로 연습
+              </a>
+              <a
+                href="/learn"
+                className="h-14 rounded-2xl bg-white text-center text-lg font-extrabold leading-[3.5rem] text-slate-900 ring-1 ring-slate-200 shadow-sm active:scale-[0.99]"
+              >
+                학습으로 가기
+              </a>
+            </div>
+          </section>
+        )}
+
         {/* 단 선택 */}
-        {showSettings && (
+        {showSettings && !endScreen && (
         <section className="mt-6 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
           <div className="text-sm font-bold">어떤 단을 할까?</div>
           {mode !== "mistakes" && (
@@ -505,7 +544,7 @@ export default function QuizPage() {
         )}
 
         {/* 문제 */}
-        {current && (
+        {current && !endScreen && (
           <>
             <div className="mt-5 mb-3 flex items-start gap-3">
               <div className="text-3xl">🐥</div>
