@@ -6,6 +6,7 @@ import { BADGES, getRewards } from "@/shared/lib/rewards";
 
 export default function CollectionPage() {
   const [rewards] = useState(() => getRewards());
+  const [selected, setSelected] = useState<{ id: string; title: string; desc: string; emoji: string; unlockedAt: string | null } | null>(null);
 
   const list = useMemo(() => {
     return BADGES.map((b) => ({
@@ -35,7 +36,9 @@ export default function CollectionPage() {
             {list.map((b) => {
               const unlocked = Boolean(b.unlockedAt);
               return (
-                <div
+                <button
+                  type="button"
+                  onClick={() => setSelected(b)}
                   key={b.id}
                   className={
                     "relative aspect-square rounded-3xl p-3 text-center ring-1 " +
@@ -51,11 +54,45 @@ export default function CollectionPage() {
                   )}
                   <div className={"mt-3 text-3xl " + (unlocked ? "" : "opacity-30")}>{b.emoji}</div>
                   <div className="mt-2 text-xs font-extrabold leading-tight">{b.title}</div>
-                </div>
+                </button>
               );
             })}
           </div>
         </div>
+
+
+
+        {selected && (
+          <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-4">
+            <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-xl ring-1 ring-slate-200">
+              <div className="flex items-start justify-between">
+                <div>
+                  <div className="text-4xl">{selected.emoji}</div>
+                  <div className="mt-2 text-xl font-extrabold">{selected.title}</div>
+                  <div className="mt-1 text-sm text-slate-700">{selected.desc}</div>
+                  <div className="mt-3 text-sm font-extrabold">
+                    {selected.unlockedAt ? "✨ 받았어!" : "🔒 아직 못 받았어"}
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setSelected(null)}
+                  className="rounded-full bg-slate-100 px-3 py-2 text-sm font-extrabold text-slate-700 ring-1 ring-slate-200"
+                >
+                  닫기
+                </button>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setSelected(null)}
+                className="mt-6 h-14 w-full rounded-2xl bg-amber-400 text-lg font-extrabold text-slate-900 ring-1 ring-amber-300 active:scale-[0.99]"
+              >
+                확인
+              </button>
+            </div>
+          </div>
+        )}
 
         <div className="mt-6 text-center text-xs text-slate-500">
           모은 스티커: <span className="font-extrabold">{unlockedCount}</span> / {list.length}
