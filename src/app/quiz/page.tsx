@@ -210,7 +210,7 @@ export default function QuizPage() {
         setPicked(null);
         setIsRight(null);
         setMessage("콕 누르면 바로 알려줄게!");
-    setCharLine("다음 문제! 🐥");
+        setCharLine("시작! 🐥");
         setStartedAt(now);
         const session: QuizSession = {
           id: sid,
@@ -250,12 +250,9 @@ export default function QuizPage() {
     setPicked(null);
     setIsRight(null);
     setMessage("콕 누르면 바로 알려줄게!");
-    setCharLine("다음 문제! 🐥");
-    setMessage("콕 누르면 바로 알려줄게!");
-    setCharLine("다음 문제! 🐥");
+    setCharLine("시작! 🐥");
     setStartedAt(Date.now());
     setShowSettings(false);
-    setCharLine("시작! 🐥");
     setIsFinalizing(false);
     finalizedRef.current = false;
   }
