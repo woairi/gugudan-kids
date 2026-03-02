@@ -424,7 +424,7 @@ export default function QuizPage() {
               </a>
               <a
                 href="/quiz"
-                onClick={(e) => {
+                onClick={() => {
                   // keep it simple: let user choose weak mode from settings
                 }}
                 className="h-14 rounded-2xl bg-amber-200 text-center text-lg font-extrabold leading-[3.5rem] text-slate-900 ring-1 ring-amber-300 active:scale-[0.99]"
